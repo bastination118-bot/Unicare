@@ -1,0 +1,24 @@
+{
+  "name": "unicare-web",
+  "version": "1.1.0",
+  "description": "Unicare - AI健康运势分析",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "fortune",
+    "bazi",
+    "palmistry",
+    "ai",
+    "kimi",
+    "moonshot"
+  ],
+  "author": "basti_zhang",
+  "license": "MIT",
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}

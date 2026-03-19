@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "name": "unicare-web",
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "MOONSHOT_API_KEY": "@moonshot-api-key",
+    "MOONSHOT_MODEL": "kimi-k2.5"
+  }
+}

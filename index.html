@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Unicare - AI健康运势分析</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <div class="nav-brand">🦄 Unicare</div>
+      <div class="nav-tabs">
+        <a href="#home" class="nav-tab active" data-page="home">首页</a>
+        <a href="#fortune" class="nav-tab" data-page="fortune">运势</a>
+      </div>
+    </nav>
+
+    <!-- 页面容器 -->
+    <main class="main-content">
+      <!-- 首页 -->
+      <section id="home" class="page active">
+        <div class="brand-section">
+          <div class="brand-logo">🦄</div>
+          <h1 class="brand-name">Unicare</h1>
+          <p class="brand-slogan">AI读懂你的健康和运势</p>
+        </div>
+
+        <!-- 今日运势卡片 -->
+        <div class="fortune-today-card" onclick="app.goToFortune()">
+          <div class="fortune-header">
+            <span class="fortune-label">今日运势</span>
+            <span class="fortune-date" id="todayDate">--</span>
+          </div>
+          <div class="fortune-brief">
+            <span class="fortune-lucky" id="luckyColor">幸运色：--</span>
+            <span class="fortune-star" id="luckyStar">--</span>
+          </div>
+          <div class="fortune-desc" id="dailyFortune">点击录入八字查看今日运势</div>
+        </div>
+
+        <!-- 功能入口 -->
+        <h2 class="section-title">开始探索</h2>
+        <div class="feature-grid">
+          <div class="feature-item" onclick="app.goToPalm()">
+            <div class="feature-icon">✋</div>
+            <div class="feature-name">手相分析</div>
+            <div class="feature-desc">解读五大线纹</div>
+          </div>
+          <div class="feature-item" onclick="app.goToBazi()">
+            <div class="feature-icon">☯️</div>
+            <div class="feature-name">八字运势</div>
+            <div class="feature-desc">五行命理分析</div>
+          </div>
+        </div>
+
+        <!-- 会员推广 -->
+        <div class="member-card" onclick="app.showMemberTip()">
+          <div class="member-title">✨ 解锁完整报告</div>
+          <div class="member-benefits">
+            <span class="benefit-tag">深度分析</span>
+            <span class="benefit-tag">专家解读</span>
+            <span class="benefit-tag">年度运势</span>
+          </div>
+          <div class="member-btn">立即查看</div>
+        </div>
+
+        <div class="disclaimer">本程序仅供娱乐参考，不构成专业建议</div>
+      </section>
+
+      <!-- 手相分析页 -->
+      <section id="palm" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.goBack()">← 返回</button>
+          <h2>手相分析</h2>
+        </div>
+
+        <div id="palm-step1" class="palm-step">
+          <div class="guide-section">
+            <div class="guide-icon">✋</div>
+            <div class="guide-title">请拍摄手掌照片</div>
+            <div class="guide-tips">
+              <div class="tip-item"><span class="tip-num">1</span> 光线充足，避免阴影</div>
+              <div class="tip-item"><span class="tip-num">2</span> 手掌完全展开，五指分开</div>
+              <div class="tip-item"><span class="tip-num">3</span> 掌纹清晰可见，不模糊</div>
+            </div>
+          </div>
+
+          <div class="photo-preview" id="palmPreview" style="display:none;">
+            <img id="palmPreviewImg" src="" alt="手掌预览">
+          </div>
+
+          <div class="btn-group">
+            <input type="file" id="palmInput" accept="image/*" style="display:none;" onchange="app.handlePalmPhoto(event)">
+            <button class="btn-primary" onclick="document.getElementById('palmInput').click()">📷 拍照/选图</button>
+            <button id="startPalmBtn" class="btn-primary" style="display:none; margin-top:20px;" onclick="app.startPalmAnalysis()">✨ 开始分析</button>
+          </div>
+        </div>
+
+        <div id="palm-step2" class="palm-step" style="display:none;">
+          <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">AI正在分析手相...</div>
+            <div class="loading-progress" id="palmProgress">0%</div>
+            <div class="loading-tips">
+              <div class="tip-text" id="palmTip">💡 正在识别生命线...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 手相报告页 -->
+      <section id="palm-report" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.goHome()">← 返回首页</button>
+          <h2>手相报告</h2>
+        </div>
+
+        <div class="report-header">
+          <div class="report-title">✋ 手相分析报告</div>
+          <div class="report-date" id="palmReportDate">--</div>
+        </div>
+
+        <div id="palmLinesContainer"></div>
+
+        <div class="card">
+          <div class="card-title">💡 综合建议</div>
+          <div class="suggestion-card" id="palmSuggestion"></div>
+        </div>
+
+        <div class="action-btns">
+          <button class="btn-primary" onclick="app.savePalmReport()">💾 保存报告</button>
+          <button class="btn-secondary" onclick="app.goHome()">🏠 返回首页</button>
+        </div>
+
+        <div class="disclaimer">免责声明：本报告仅供娱乐参考</div>
+      </section>
+
+      <!-- 八字录入页 -->
+      <section id="bazi" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.goBack()">← 返回</button>
+          <h2>八字排盘</h2>
+        </div>
+
+        <div class="form-card">
+          <div class="form-item">
+            <label class="form-label">出生日期</label>
+            <input type="date" id="birthDate" class="form-input">
+          </div>
+
+          <div class="form-item">
+            <label class="form-label">出生时间</label>
+            <input type="time" id="birthTime" class="form-input" value="12:00">
+          </div>
+
+          <div class="form-item">
+            <label class="form-label">性别</label>
+            <div class="gender-selector">
+              <div class="gender-option active" data-gender="male" onclick="app.selectGender('male')">👨 男</div>
+              <div class="gender-option" data-gender="female" onclick="app.selectGender('female')">👩 女</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="app.submitBazi()">🔮 开始排盘</button>
+
+        <div class="bazi-tips">
+          <div class="tips-title">💡 八字排盘说明</div>
+          <div class="tips-content">
+            <div>• 八字即生辰八字，由年、月、日、时四柱组成</div>
+            <div>• 每柱包含一个天干和一个地支，共八个字</div>
+            <div>• 通过八字可分析五行属性、性格特点、运势走向</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 运势报告页 -->
+      <section id="fortune" class="page">
+        <div id="fortune-empty" style="display:none;">
+          <div class="empty-state">
+            <div class="empty-icon">☯️</div>
+            <div class="empty-title">请先录入八字信息</div>
+            <div class="empty-desc">录入出生日期和时间，查看您的专属运势分析</div>
+            <button class="btn-primary" onclick="app.goToBazi()">去录入</button>
+          </div>
+        </div>
+
+        <div id="fortune-content">
+          <h2 class="page-title">我的运势</h2>
+
+          <!-- 八字命盘 -->
+          <div class="card bazi-card">
+            <div class="card-title">八字命盘</div>
+            <div class="bazi-grid" id="baziGrid"></div>
+          </div>
+
+          <!-- 五行分析 -->
+          <div class="card">
+            <div class="card-title">五行分析</div>
+            <div class="wuxing-chart" id="wuxingChart"></div>
+            <div class="wuxing-summary" id="wuxingSummary"></div>
+          </div>
+
+          <!-- 今日运势 -->
+          <div class="fortune-today-section">
+            <div class="fortune-header">
+              <div class="fortune-title">今日运势</div>
+              <div class="fortune-score" id="todayScore">综合评分：--</div>
+            </div>
+            <div class="fortune-tags" id="fortuneTags"></div>
+            <div class="fortune-detail" id="fortuneDetail"></div>
+          </div>
+
+          <button class="btn-secondary" onclick="app.goToBazi()" style="margin-top:30px;">重新录入八字</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 底部信息 -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="powered-by">
+        <span class="powered-text">🤖 Powered by</span>
+        <a href="https://platform.moonshot.cn" target="_blank" class="kimi-link">Kimi AI</a>
+      </div>
+      <div class="version-info">v1.1.0</div>
+    </div>
+  </footer>
+
+  <script src="js/bazi.js"></script>
+  <script src="js/mock.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
