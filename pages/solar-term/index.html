@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>节气运势 - Unicare</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .solar-term-page {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+    
+    /* 头部背景 */
+    .term-header {
+      background: linear-gradient(135deg, #6B5B95 0%, #8B7BB5 50%, #D4A853 100%);
+      padding: 30px 20px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .term-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+    
+    .term-header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .current-term {
+      text-align: center;
+    }
+    
+    .term-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .term-name {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .term-date {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    
+    /* 内容区 */
+    .term-content {
+      padding: 20px;
+      margin-top: -20px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* 运势卡片 */
+    .fortune-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .fortune-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .fortune-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .fortune-score {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    
+    .fortune-aspects {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .aspect-item {
+      background: #f8f8f8;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+    }
+    
+    .aspect-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    
+    .aspect-name {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    
+    .aspect-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+    }
+    
+    .aspect-value.good { color: #52C41A; }
+    .aspect-value.normal { color: #FAAD14; }
+    .aspect-value.bad { color: #FF6B6B; }
+    
+    /* 宜忌卡片 */
+    .yiji-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    
+    .yiji-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .yiji-section {
+      text-align: center;
+    }
+    
+    .yiji-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .yiji-title.yi { color: #52C41A; }
+    .yiji-title.ji { color: #FF6B6B; }
+    
+    .yiji-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .yiji-item {
+      background: #f8f8f8;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    
+    /* 养生建议 */
+    .health-card {
+      background: linear-gradient(135deg, #F6FFED 0%, #fff 100%);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 15px;
+      border: 2px solid #B7EB8F;
+    }
+    
+    .health-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #52C41A;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .health-content {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #555;
+    }
+    
+    /* AI分析卡片 */
+    .ai-card {
+      background: linear-gradient(135deg, rgba(107,91,149,0.05) 0%, #fff 100%);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .ai-icon {
+      font-size: 24px;
+    }
+    
+    .ai-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .ai-content {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #555;
+    }
+    
+    /* 节气列表 */
+    .term-list-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    
+    .term-list-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .term-season {
+      margin-bottom: 20px;
+    }
+    
+    .season-name {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 12px;
+      padding-left: 8px;
+      border-left: 3px solid var(--primary);
+    }
+    
+    .term-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .term-item {
+      background: #f8f8f8;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .term-item:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .term-item.current {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+    
+    /* 导航 */
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+      padding: 20px;
+    }
+    
+    .nav-btn {
+      flex: 1;
+      background: white;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: 14px;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .nav-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .nav-btn.primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* 加载状态 */
+    .loading-card {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #eee;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-size: 15px;
+      color: #888;
+    }
+    
+    /* 底部 */
+    .footer-note {
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="solar-term-page">
+    <!-- 头部 -->
+    <div class="term-header">
+      <div class="term-header-content">
+        <a href="../../index.html" class="back-link">← 返回首页</a>
+        
+        <div class="current-term">
+          <div class="term-badge">🌿 当前节气</div>
+          <div class="term-name" id="currentTermName">--</div>
+          <div class="term-date" id="currentTermDate">--</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 内容 -->
+    <div class="term-content">
+      <!-- 节气运势 -->
+      <div class="fortune-card">
+        <div class="fortune-header">
+          <div class="fortune-title">✨ 节气运势</div>
+          <div class="fortune-score" id="termScore">--</div>
+        </div>
+        
+        <div class="fortune-aspects" id="fortuneAspects">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+      
+      <!-- 今日宜忌 -->
+      <div class="yiji-card">
+        <div class="yiji-grid">
+          <div class="yiji-section">
+            <div class="yiji-title yi">✅ 今日宜</div>
+            <div class="yiji-list" id="yiList">
+              <!-- 动态生成 -->
+            </div>
+          </div>
+          
+          <div class="yiji-section">
+            <div class="yiji-title ji">❌ 今日忌</div>
+            <div class="yiji-list" id="jiList">
+              <!-- 动态生成 -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 养生建议 -->
+      <div class="health-card">
+        <div class="health-title">🌱 节气养生</div>
+        <div class="health-content" id="healthContent">
+          加载中...
+        </div>
+      </div>
+      
+      <!-- AI解读 -->
+      <div class="ai-card">
+        <div class="ai-header">
+          <div class="ai-icon">🤖</div>
+          <div class="ai-title">Kimi AI 节气解读</div>
+        </div>
+        
+        <div class="ai-content" id="aiContent">
+          正在为您生成节气运势分析...
+        </div>
+      </div>
+      
+      <!-- 二十四节气 -->
+      <div class="term-list-card">
+        <div class="term-list-title">📅 二十四节气</div>
+        
+        <div class="term-season">
+          <div class="season-name">春季 (立春→谷雨)</div>
+          <div class="term-items">
+            <span class="term-item" data-term="立春">立春</span>
+            <span class="term-item" data-term="雨水">雨水</span>
+            <span class="term-item" data-term="惊蛰">惊蛰</span>
+            <span class="term-item" data-term="春分">春分</span>
+            <span class="term-item" data-term="清明">清明</span>
+            <span class="term-item" data-term="谷雨">谷雨</span>
+          </div>
+        </div>
+        
+        <div class="term-season">
+          <div class="season-name">夏季 (立夏→大暑)</div>
+          <div class="term-items">
+            <span class="term-item" data-term="立夏">立夏</span>
+            <span class="term-item" data-term="小满">小满</span>
+            <span class="term-item" data-term="芒种">芒种</span>
+            <span class="term-item" data-term="夏至">夏至</span>
+            <span class="term-item" data-term="小暑">小暑</span>
+            <span class="term-item" data-term="大暑">大暑</span>
+          </div>
+        </div>
+        
+        <div class="term-season">
+          <div class="season-name">秋季 (立秋→霜降)</div>
+          <div class="term-items">
+            <span class="term-item" data-term="立秋">立秋</span>
+            <span class="term-item" data-term="处暑">处暑</span>
+            <span class="term-item" data-term="白露">白露</span>
+            <span class="term-item" data-term="秋分">秋分</span>
+            <span class="term-item" data-term="寒露">寒露</span>
+            <span class="term-item" data-term="霜降">霜降</span>
+          </div>
+        </div>
+        
+        <div class="term-season">
+          <div class="season-name">冬季 (立冬→大寒)</div>
+          <div class="term-items">
+            <span class="term-item" data-term="立冬">立冬</span>
+            <span class="term-item" data-term="小雪">小雪</span>
+            <span class="term-item" data-term="大雪">大雪</span>
+            <span class="term-item" data-term="冬至">冬至</span>
+            <span class="term-item" data-term="小寒">小寒</span>
+            <span class="term-item" data-term="大寒">大寒</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 导航 -->
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="solarTerm.goToBazi()">☯️ 八字运势</button>
+        <button class="nav-btn primary" onclick="solarTerm.goHome()">🏠 返回首页</button>
+      </div>
+      
+      <div class="footer-note">
+        本分析仅供参考 | 二十四节气传统文化
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // 二十四节气数据
+    const solarTermsData = {
+      // 2026年节气日期（简化版）
+      terms: [
+        { name: '立春', date: '2026-02-04', season: 'spring', meaning: '春季开始，万物复苏' },
+        { name: '雨水', date: '2026-02-18', season: 'spring', meaning: '降雨增多，冰雪融化' },
+        { name: '惊蛰', date: '2026-03-05', season: 'spring', meaning: '春雷始鸣，蛰虫惊醒' },
+        { name: '春分', date: '2026-03-20', season: 'spring', meaning: '昼夜平分，春季正中' },
+        { name: '清明', date: '2026-04-05', season: 'spring', meaning: '天气晴朗，草木繁茂' },
+        { name: '谷雨', date: '2026-04-20', season: 'spring', meaning: '雨生百谷，农忙时节' },
+        { name: '立夏', date: '2026-05-05', season: 'summer', meaning: '夏季开始，万物生长' },
+        { name: '小满', date: '2026-05-21', season: 'summer', meaning: '麦粒饱满，尚未成熟' },
+        { name: '芒种', date: '2026-06-05', season: 'summer', meaning: '麦类成熟，稻子播种' },
+        { name: '夏至', date: '2026-06-21', season: 'summer', meaning: '白昼最长，炎热将至' },
+        { name: '小暑', date: '2026-07-07', season: 'summer', meaning: '气候开始炎热' },
+        { name: '大暑', date: '2026-07-23', season: 'summer', meaning: '一年中最热时期' },
+        { name: '立秋', date: '2026-08-07', season: 'autumn', meaning: '秋季开始，暑去凉来' },
+        { name: '处暑', date: '2026-08-23', season: 'autumn', meaning: '炎热暑天结束' },
+        { name: '白露', date: '2026-09-07', season: 'autumn', meaning: '天气转凉，露凝而白' },
+        { name: '秋分', date: '2026-09-23', season: 'autumn', meaning: '昼夜平分，秋季正中' },
+        { name: '寒露', date: '2026-10-08', season: 'autumn', meaning: '露水已寒，将要结冰' },
+        { name: '霜降', date: '2026-10-23', season: 'autumn', meaning: '天气渐冷，初霜出现' },
+        { name: '立冬', date: '2026-11-07', season: 'winter', meaning: '冬季开始，万物收藏' },
+        { name: '小雪', date: '2026-11-22', season: 'winter', meaning: '开始降雪，雪量小' },
+        { name: '大雪', date: '2026-12-07', season: 'winter', meaning: '雪量增大，地面积雪' },
+        { name: '冬至', date: '2026-12-21', season: 'winter', meaning: '白昼最短，寒冷将至' },
+        { name: '小寒', date: '2026-01-05', season: 'winter', meaning: '气候开始寒冷' },
+        { name: '大寒', date: '2026-01-20', season: 'winter', meaning: '一年中最冷时期' }
+      ],
+      
+      // 宜忌数据
+      yiJiData: {
+        spring: {
+          yi: ['出行', '祭祀', '祈福', '纳采', '嫁娶', '开市', '立券'],
+          ji: ['安葬', '动土', '破土', '掘井'],
+          health: '春季养生重在养肝，宜多食绿色蔬菜，保持心情舒畅，早睡早起，适度运动。'
+        },
+        summer: {
+          yi: ['祭祀', '祈福', '求嗣', '开光', '出行', '解除', '伐木'],
+          ji: ['嫁娶', '纳财', '安葬', '入宅'],
+          health: '夏季养生重在养心，宜清淡饮食，多补充水分，避免烈日暴晒，午后宜小憩。'
+        },
+        autumn: {
+          yi: ['嫁娶', '祭祀', '祈福', '求嗣', '开光', '出行', '出火'],
+          ji: ['开市', '立券', '纳财', '分居', '安床'],
+          health: '秋季养生重在养肺，宜多食润肺食物，如梨、百合、银耳，注意保暖，预防秋燥。'
+        },
+        winter: {
+          yi: ['祭祀', '祈福', '求嗣', '开光', '拆卸', '修造', '动土'],
+          ji: ['嫁娶', '安葬', '出行', '入宅', '移徙'],
+          health: '冬季养生重在养肾，宜多食温补食物，如羊肉、核桃、黑芝麻，注意保暖，早睡晚起。'
+        }
+      }
+    };
+    
+    const solarTerm = {
+      currentTerm: null,
+      
+      init() {
+        this.currentTerm = this.getCurrentTerm();
+        this.updateUI();
+        this.generateFortune();
+        this.bindEvents();
+      },
+      
+      getCurrentTerm() {
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+        
+        // 找到当前节气
+        for (let i = 0; i < solarTermsData.terms.length; i++) {
+          const term = solarTermsData.terms[i];
+          const termDate = new Date(term.date);
+          
+          if (termDate >= today) {
+            return solarTermsData.terms[i > 0 ? i - 1 : solarTermsData.terms.length - 1];
+          }
+        }
+        
+        return solarTermsData.terms[0];
+      },
+      
+      updateUI() {
+        if (!this.currentTerm) return;
+        
+        // 更新头部
+        document.getElementById('currentTermName').textContent = this.currentTerm.name;
+        document.getElementById('currentTermDate').textContent = 
+          `${this.currentTerm.date} · ${this.currentTerm.meaning}`;
+        
+        // 高亮当前节气
+        document.querySelectorAll('.term-item').forEach(item => {
+          if (item.dataset.term === this.currentTerm.name) {
+            item.classList.add('current');
+          }
+        });
+        
+        // 更新宜忌
+        const seasonData = solarTermsData.yiJiData[this.currentTerm.season];
+        
+        document.getElementById('yiList').innerHTML = seasonData.yi
+          .slice(0, 5)
+          .map(yi => `<div class="yiji-item">${yi}</div>`)
+          .join('');
+          
+        document.getElementById('jiList').innerHTML = seasonData.ji
+          .slice(0, 5)
+          .map(ji => `<div class="yiji-item">${ji}</div>`)
+          .join('');
+        
+        // 更新养生建议
+        document.getElementById('healthContent').textContent = seasonData.health;
+      },
+      
+      generateFortune() {
+        // 生成节气运势评分
+        const seed = new Date().getDate() + this.currentTerm.name.length;
+        const baseScore = 70 + (seed % 25);
+        
+        const aspects = [
+          { name: '事业运', icon: '💼', value: Math.min(100, baseScore + Math.floor(Math.random() * 10)) },
+          { name: '财运', icon: '💰', value: Math.min(100, baseScore + Math.floor(Math.random() * 10)) },
+          { name: '感情运', icon: '💕', value: Math.min(100, baseScore + Math.floor(Math.random() * 10)) },
+          { name: '健康运', icon: '🏃', value: Math.min(100, baseScore + Math.floor(Math.random() * 10)) }
+        ];
+        
+        // 更新运势显示
+        document.getElementById('termScore').textContent = baseScore;
+        
+        document.getElementById('fortuneAspects').innerHTML = aspects.map(a => {
+          const level = a.value >= 80 ? 'good' : a.value >= 60 ? 'normal' : 'bad';
+          return `
+            <div class="aspect-item">
+              <div class="aspect-icon">${a.icon}</div>
+              <div class="aspect-name">${a.name}</div>
+              <div class="aspect-value ${level}">${a.value}分</div>
+            </div>
+          `;
+        }).join('');
+        
+        // 生成AI解读
+        this.generateAIAnalysis();
+      },
+      
+      generateAIAnalysis() {
+        const analyses = {
+          spring: `${this.currentTerm.name}时节，阳气上升，万物复苏。此时运势如春风拂面，整体呈上升趋势。事业上适合开创新项目，财运方面宜守不宜攻，感情运势回暖，单身者有望遇到心仪对象。健康方面需注意肝火旺盛，保持心情舒畅。`,
+          summer: `${this.currentTerm.name}时节，阳气最盛，万物繁茂。此时运势如夏日阳光，热情奔放。事业上适合冲刺目标，财运亨通但需防冲动消费，感情运势热烈，适合表白或求婚。健康方面需注意防暑降温，避免过度劳累。`,
+          autumn: `${this.currentTerm.name}时节，阴气渐长，万物收敛。此时运势如秋高气爽，平稳踏实。事业上适合总结经验，财运稳定适合理财规划，感情运势平稳，适合深度交流。健康方面需注意防秋燥，多食润肺食物。`,
+          winter: `${this.currentTerm.name}时节，阴气最盛，万物蛰伏。此时运势如冬日暖阳，内敛蓄力。事业上适合规划未来，财运宜守不宜攻，感情运势温馨，适合陪伴家人。健康方面需注意保暖防寒，早睡晚起养精蓄锐。`
+        };
+        
+        document.getElementById('aiContent').textContent = analyses[this.currentTerm.season];
+      },
+      
+      bindEvents() {
+        // 节气点击事件
+        document.querySelectorAll('.term-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const termName = item.dataset.term;
+            const term = solarTermsData.terms.find(t => t.name === termName);
+            if (term) {
+              this.currentTerm = term;
+              this.updateUI();
+              this.generateFortune();
+              window.scrollTo(0, 0);
+            }
+          });
+        });
+      },
+      
+      goHome() {
+        window.location.href = '../../index.html';
+      },
+      
+      goToBazi() {
+        window.location.href = '../../index.html#bazi';
+      }
+    };
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      solarTerm.init();
+    });
+  </script>
+</body>
+</html>

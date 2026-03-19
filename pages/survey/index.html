@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>用户问卷 - Unicare</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .survey-page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+    
+    .survey-header {
+      text-align: center;
+      padding: 30px 0;
+    }
+    
+    .survey-header .icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+    
+    .survey-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    
+    .survey-header p {
+      font-size: 15px;
+      color: #888;
+    }
+    
+    .progress-bar {
+      background: #E8E8E8;
+      border-radius: 10px;
+      height: 8px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+    
+    .progress-text {
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      margin-top: 8px;
+    }
+    
+    .question-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    
+    .question-number {
+      font-size: 14px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .question-text {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    
+    .option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .option-item {
+      background: #f8f8f8;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .option-item:hover {
+      background: #f0f0f0;
+    }
+    
+    .option-item.selected {
+      background: rgba(107, 91, 149, 0.08);
+      border-color: var(--primary);
+    }
+    
+    .option-icon {
+      font-size: 24px;
+    }
+    
+    .option-text {
+      font-size: 15px;
+      flex: 1;
+    }
+    
+    .option-check {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .option-item.selected .option-check {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .option-check::after {
+      content: '✓';
+      color: white;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .option-item.selected .option-check::after {
+      opacity: 1;
+    }
+    
+    .multi-select-hint {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 15px;
+      padding: 8px 12px;
+      background: #f8f8f8;
+      border-radius: 8px;
+    }
+    
+    .survey-nav {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .survey-nav .btn-secondary {
+      flex: 0.4;
+    }
+    
+    .survey-nav .btn-primary {
+      flex: 0.6;
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* 结果页面 */
+    .result-page {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    
+    .result-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    
+    .result-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    
+    .result-desc {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 30px;
+    }
+    
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+    
+    .profile-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+    
+    .profile-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .profile-tag {
+      background: linear-gradient(135deg, rgba(107,91,149,0.1) 0%, rgba(155,139,197,0.1) 100%);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .benefit-list {
+      background: linear-gradient(135deg, #FFF9E6 0%, #FFF5D6 100%);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+      border: 2px solid #FFE4A1;
+      text-align: left;
+    }
+    
+    .benefit-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #D4A853;
+      margin-bottom: 15px;
+    }
+    
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: #555;
+    }
+    
+    .benefit-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .benefit-icon {
+      font-size: 20px;
+    }
+    
+    /* 输入框样式 */
+    .input-option {
+      margin-top: 10px;
+    }
+    
+    .input-option input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    .input-option input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    /* 滑动条样式 */
+    .range-option {
+      margin-top: 15px;
+    }
+    
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    
+    .range-slider {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      -webkit-appearance: none;
+      background: #E8E8E8;
+    }
+    
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(107,91,149,0.3);
+    }
+    
+    .range-value {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="survey-page">
+    <!-- 问卷头部 -->
+    <div class="survey-header">
+      <div class="icon">📋</div>
+      <h1>欢迎开启健康运势之旅</h1>
+      <p>花2分钟填写问卷，让我们为您提供更精准的分析</p>
+    </div>
+    
+    <!-- 进度条 -->
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    <div class="progress-text" id="progressText">第 1 / 5 题</div>
+    
+    <!-- 问题容器 -->
+    <div id="questionContainer"></div>
+    
+    <!-- 导航按钮 -->
+    <div class="survey-nav" id="surveyNav">
+      <button class="btn-secondary" id="prevBtn" onclick="survey.prev()" style="display:none">上一题</button>
+      <button class="btn-primary" id="nextBtn" onclick="survey.next()" disabled>下一题</button>
+    </div>
+  </div>
+  
+  <script>
+    // 问卷数据
+    const surveyData = {
+      questions: [
+        {
+          id: 'age',
+          type: 'single',
+          question: '您的年龄段是？',
+          options: [
+            { value: '18-25', label: '18-25岁', icon: '🌱' },
+            { value: '26-35', label: '26-35岁', icon: '🌿' },
+            { value: '36-45', label: '36-45岁', icon: '🌳' },
+            { value: '46-55', label: '46-55岁', icon: '🍂' },
+            { value: '55+', label: '55岁以上', icon: '🎋' }
+          ]
+        },
+        {
+          id: 'gender',
+          type: 'single',
+          question: '您的性别是？',
+          options: [
+            { value: 'male', label: '男性', icon: '👨' },
+            { value: 'female', label: '女性', icon: '👩' },
+            { value: 'other', label: '保密', icon: '🤐' }
+          ]
+        },
+        {
+          id: 'interests',
+          type: 'multi',
+          question: '您最关注哪些方面？（可多选）',
+          hint: '选择您最关心的健康与运势领域',
+          options: [
+            { value: 'health', label: '身体健康', icon: '💪' },
+            { value: 'career', label: '事业发展', icon: '💼' },
+            { value: 'wealth', label: '财富运势', icon: '💰' },
+            { value: 'love', label: '感情婚姻', icon: '💕' },
+            { value: 'family', label: '家庭关系', icon: '👨‍👩‍👧' },
+            { value: 'study', label: '学业考试', icon: '📚' }
+          ]
+        },
+        {
+          id: 'purpose',
+          type: 'single',
+          question: '您使用 Unicare 的主要目的是？',
+          options: [
+            { value: 'daily', label: '每日运势参考', icon: '📅' },
+            { value: 'decision', label: '重要决策辅助', icon: '🎯' },
+            { value: 'health', label: '健康状态监测', icon: '🏥' },
+            { value: 'curiosity', label: '好奇尝试', icon: '🔮' },
+            { value: 'fun', label: '娱乐消遣', icon: '🎮' }
+          ]
+        },
+        {
+          id: 'frequency',
+          type: 'single',
+          question: '您希望多久查看一次运势？',
+          options: [
+            { value: 'daily', label: '每天查看', icon: '🌅' },
+            { value: 'weekly', label: '每周一次', icon: '📆' },
+            { value: 'monthly', label: '每月一次', icon: '🌙' },
+            { value: 'special', label: '特殊日子查看', icon: '✨' }
+          ]
+        }
+      ]
+    };
+    
+    // 问卷控制器
+    const survey = {
+      currentIndex: 0,
+      answers: {},
+      
+      init() {
+        // 检查是否已完成问卷
+        const completed = localStorage.getItem('surveyCompleted');
+        const savedAnswers = localStorage.getItem('surveyAnswers');
+        
+        if (completed === 'true' && savedAnswers) {
+          this.answers = JSON.parse(savedAnswers);
+          this.showResult();
+          return;
+        }
+        
+        this.renderQuestion();
+        this.updateProgress();
+      },
+      
+      renderQuestion() {
+        const question = surveyData.questions[this.currentIndex];
+        const container = document.getElementById('questionContainer');
+        
+        let optionsHtml = '';
+        
+        if (question.type === 'single') {
+          optionsHtml = question.options.map(opt => `
+            <div class="option-item ${this.answers[question.id] === opt.value ? 'selected' : ''}" 
+                 onclick="survey.selectOption('${question.id}', '${opt.value}')">
+              <span class="option-icon">${opt.icon}</span>
+              <span class="option-text">${opt.label}</span>
+              <span class="option-check"></span>
+            </div>
+          `).join('');
+        } else if (question.type === 'multi') {
+          const selected = this.answers[question.id] || [];
+          optionsHtml = `
+            <div class="multi-select-hint">${question.hint}</div>
+            ${question.options.map(opt => `
+              <div class="option-item ${selected.includes(opt.value) ? 'selected' : ''}" 
+                   onclick="survey.toggleMultiOption('${question.id}', '${opt.value}')">
+                <span class="option-icon">${opt.icon}</span>
+                <span class="option-text">${opt.label}</span>
+                <span class="option-check"></span>
+              </div>
+            `).join('')}
+          `;
+        }
+        
+        container.innerHTML = `
+          <div class="question-card">
+            <div class="question-number">问题 ${this.currentIndex + 1}</div>
+            <div class="question-text">${question.question}</div>
+            <div class="option-list">
+              ${optionsHtml}
+            </div>
+          </div>
+        `;
+        
+        // 更新按钮状态
+        this.updateNavButtons();
+      },
+      
+      selectOption(questionId, value) {
+        this.answers[questionId] = value;
+        this.renderQuestion();
+        this.updateNavButtons();
+      },
+      
+      toggleMultiOption(questionId, value) {
+        if (!this.answers[questionId]) {
+          this.answers[questionId] = [];
+        }
+        
+        const index = this.answers[questionId].indexOf(value);
+        if (index > -1) {
+          this.answers[questionId].splice(index, 1);
+        } else {
+          this.answers[questionId].push(value);
+        }
+        
+        this.renderQuestion();
+        this.updateNavButtons();
+      },
+      
+      updateNavButtons() {
+        const question = surveyData.questions[this.currentIndex];
+        const hasAnswer = this.answers[question.id] && 
+          (Array.isArray(this.answers[question.id]) ? this.answers[question.id].length > 0 : true);
+        
+        document.getElementById('prevBtn').style.display = this.currentIndex > 0 ? 'block' : 'none';
+        document.getElementById('nextBtn').disabled = !hasAnswer;
+        document.getElementById('nextBtn').textContent = 
+          this.currentIndex === surveyData.questions.length - 1 ? '完成' : '下一题';
+      },
+      
+      updateProgress() {
+        const progress = ((this.currentIndex + 1) / surveyData.questions.length) * 100;
+        document.getElementById('progressFill').style.width = `${progress}%`;
+        document.getElementById('progressText').textContent = 
+          `第 ${this.currentIndex + 1} / ${surveyData.questions.length} 题`;
+      },
+      
+      next() {
+        if (this.currentIndex < surveyData.questions.length - 1) {
+          this.currentIndex++;
+          this.renderQuestion();
+          this.updateProgress();
+        } else {
+          this.submit();
+        }
+      },
+      
+      prev() {
+        if (this.currentIndex > 0) {
+          this.currentIndex--;
+          this.renderQuestion();
+          this.updateProgress();
+        }
+      },
+      
+      submit() {
+        // 保存答案
+        localStorage.setItem('surveyAnswers', JSON.stringify(this.answers));
+        localStorage.setItem('surveyCompleted', 'true');
+        
+        // 生成用户画像标签
+        this.generateUserProfile();
+        
+        // 显示结果
+        this.showResult();
+      },
+      
+      generateUserProfile() {
+        const profile = {
+          ageGroup: this.answers.age,
+          gender: this.answers.gender,
+          interests: this.answers.interests || [],
+          purpose: this.answers.purpose,
+          frequency: this.answers.frequency,
+          createdAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('userProfile', JSON.stringify(profile));
+      },
+      
+      showResult() {
+        const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+        const interests = profile.interests || [];
+        
+        // 生成功能推荐
+        const featureMap = {
+          'health': { name: '舌相分析', icon: '👅', desc: '中医AI舌诊' },
+          'career': { name: '八字运势', icon: '☯️', desc: '事业财运分析' },
+          'wealth': { name: '手相分析', icon: '✋', desc: '财运线解读' },
+          'love': { name: '八字运势', icon: '💕', desc: '感情运势预测' },
+          'family': { name: '节气分析', icon: '🌸', desc: '家庭养生建议' },
+          'study': { name: '八字运势', icon: '📚', desc: '学业考试运' }
+        };
+        
+        const recommendations = interests.slice(0, 3).map(i => featureMap[i]).filter(Boolean);
+        
+        document.querySelector('.survey-page').innerHTML = `
+          <div class="result-page">
+            <div class="result-icon">🎉</div>
+            <h1 class="result-title">问卷完成！</h1>
+            <p class="result-desc">
+              感谢您填写问卷，我们已为您生成个性化推荐。<br>
+              根据您的选择，以下功能可能最适合您：
+            </p>
+            
+            <div class="profile-card">
+              <div class="profile-title">🎯 您的关注领域</div>
+              <div class="profile-tags">
+                ${interests.map(i => {
+                  const labels = { health: '健康', career: '事业', wealth: '财富', love: '感情', family: '家庭', study: '学业' };
+                  return `<span class="profile-tag">${labels[i] || i}</span>`;
+                }).join('')}
+              </div>
+            </div>
+            
+            <div class="benefit-list">
+              <div class="benefit-title">✨ 您获得的权益</div>
+              <div class="benefit-item">
+                <span class="benefit-icon">🎁</span>
+                <span>免费体验 3 次完整分析报告</span>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">🔔</span>
+                <span>每日运势推送提醒</span>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">📊</span>
+                <span>个性化运势解读优先体验</span>
+              </div>
+            </div>
+            
+            <button class="btn-primary" onclick="survey.goToHome()">开始使用 Unicare</button>
+          </div>
+        `;
+      },
+      
+      goToHome() {
+        window.location.href = '../../index.html';
+      }
+    };
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      survey.init();
+    });
+  </script>
+</body>
+</html>

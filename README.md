@@ -4,8 +4,8 @@
 
 ## 🌐 在线访问
 
-- **Vercel 部署**: https://unicare-web.vercel.app (待配置)
-- **GitHub 仓库**: https://github.com/yourusername/unicare-web (待创建)
+- **Vercel 部署**: https://unicare-web.vercel.app
+- **GitHub 仓库**: https://github.com/basti-zhang/unicare-web
 
 ## ✨ 功能特性
 

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>邀请好友 - Unicare</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .invite-page {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #6B5B95 0%, #8B7BB5 100%);
+    }
+    
+    .invite-header {
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+    
+    .invite-header .icon {
+      font-size: 70px;
+      margin-bottom: 15px;
+    }
+    
+    .invite-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .invite-header p {
+      font-size: 15px;
+      opacity: 0.9;
+    }
+    
+    .invite-content {
+      background: var(--bg);
+      border-radius: 30px 30px 0 0;
+      padding: 30px 20px;
+      min-height: calc(100vh - 220px);
+    }
+    
+    /* 统计卡片 */
+    .stats-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      text-align: center;
+    }
+    
+    .stat-item {
+      padding: 10px;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: #888;
+    }
+    
+    /* 邀请码区域 */
+    .code-section {
+      background: linear-gradient(135deg, #FFF9E6 0%, #FFF5D6 100%);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 2px solid #FFE4A1;
+      text-align: center;
+    }
+    
+    .code-label {
+      font-size: 14px;
+      color: #B8893C;
+      margin-bottom: 12px;
+    }
+    
+    .code-display {
+      font-size: 36px;
+      font-weight: 800;
+      color: #D4A853;
+      letter-spacing: 8px;
+      margin-bottom: 15px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .code-action {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .btn-copy {
+      background: linear-gradient(135deg, #D4A853 0%, #E8C878 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+    
+    .btn-copy:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(212, 168, 83, 0.4);
+    }
+    
+    .btn-copy.copied {
+      background: #52C41A;
+    }
+    
+    /* 分享按钮 */
+    .share-section {
+      margin-bottom: 25px;
+    }
+    
+    .share-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .share-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    
+    .share-btn {
+      background: white;
+      border: none;
+      border-radius: 16px;
+      padding: 15px 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    
+    .share-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .share-icon {
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+    
+    .share-name {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    /* 奖励说明 */
+    .reward-card {
+      background: linear-gradient(135deg, #F6FFED 0%, #fff 100%);
+      border-radius: 20px;
+      padding: 25px;
+      border: 2px solid #B7EB8F;
+      margin-bottom: 20px;
+    }
+    
+    .reward-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #52C41A;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .reward-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    
+    .reward-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .reward-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    
+    .reward-content {
+      flex: 1;
+    }
+    
+    .reward-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    
+    .reward-desc {
+      font-size: 13px;
+      color: #888;
+    }
+    
+    /* 邀请记录 */
+    .history-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .history-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+    
+    .history-count {
+      font-size: 13px;
+      color: #888;
+      background: #f8f8f8;
+      padding: 6px 12px;
+      border-radius: 15px;
+    }
+    
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: #f8f8f8;
+      border-radius: 12px;
+    }
+    
+    .history-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      flex-shrink: 0;
+    }
+    
+    .history-info {
+      flex: 1;
+    }
+    
+    .history-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .history-time {
+      font-size: 12px;
+      color: #888;
+    }
+    
+    .history-reward {
+      font-size: 14px;
+      color: #52C41A;
+      font-weight: 600;
+    }
+    
+    .empty-history {
+      text-align: center;
+      padding: 40px 20px;
+      color: #888;
+    }
+    
+    .empty-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    
+    /* 规则说明 */
+    .rules-section {
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 1px dashed #ddd;
+    }
+    
+    .rules-title {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    
+    .rules-list {
+      font-size: 13px;
+      color: #999;
+      line-height: 1.8;
+    }
+    
+    .rules-list li {
+      margin-bottom: 6px;
+    }
+    
+    /* 返回按钮 */
+    .back-section {
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .btn-back {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 14px 40px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-back:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Toast 提示 */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 16px 32px;
+      border-radius: 30px;
+      font-size: 15px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <div class="invite-page">
+    <!-- 头部 -->
+    <div class="invite-header">
+      <div class="icon">🎁</div>
+      <h1>邀请好友 共享福利</h1>
+      <p>每邀请1位好友，双方各得3次免费分析</p>
+    </div>
+    
+    <!-- 内容区 -->
+    <div class="invite-content">
+      <!-- 统计数据 -->
+      <div class="stats-card">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="inviteCount">0</div>
+            <div class="stat-label">已邀请</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="rewardCount">0</div>
+            <div class="stat-label">获得次数</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="remainingCount">3</div>
+            <div class="stat-label">剩余次数</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 邀请码 -->
+      <div class="code-section">
+        <div class="code-label">我的专属邀请码</div>
+        <div class="code-display" id="inviteCode">------</div>
+        <div class="code-action">
+          <button class="btn-copy" id="copyBtn" onclick="invite.copyCode()">
+            📋 复制邀请码
+          </button>
+        </div>
+      </div>
+      
+      <!-- 分享按钮 -->
+      <div class="share-section">
+        <div class="share-title">分享给好友</div>
+        <div class="share-buttons">
+          <button class="share-btn" onclick="invite.share('wechat')">
+            <div class="share-icon">💬</div>
+            <div class="share-name">微信</div>
+          </button>
+          <button class="share-btn" onclick="invite.share('moment')">
+            <div class="share-icon">📱</div>
+            <div class="share-name">朋友圈</div>
+          </button>
+          <button class="share-btn" onclick="invite.share('qq')">
+            <div class="share-icon">🐧</div>
+            <div class="share-name">QQ</div>
+          </button>
+          <button class="share-btn" onclick="invite.share('link')">
+            <div class="share-icon">🔗</div>
+            <div class="share-name">复制链接</div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 奖励说明 -->
+      <div class="reward-card">
+        <div class="reward-title">🎉 邀请奖励</div>
+        
+        <div class="reward-item">
+          <div class="reward-icon">🎁</div>
+          <div class="reward-content">
+            <div class="reward-name">邀请成功奖励</div>
+            <div class="reward-desc">每邀请1位好友注册，您和好友各得3次免费完整分析</div>
+          </div>
+        </div>
+        
+        <div class="reward-item">
+          <div class="reward-icon">🏆</div>
+          <div class="reward-content">
+            <div class="reward-name">累计成就奖励</div>
+            <div class="reward-desc">邀请3人额外+5次，邀请5人额外+10次，邀请10人解锁无限分析</div>
+          </div>
+        </div>
+        
+        <div class="reward-item">
+          <div class="reward-icon">💎</div>
+          <div class="reward-content">
+            <div class="reward-name">特别福利</div>
+            <div class="reward-desc">邀请好友还可获得节气运势专题提前查看特权</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 邀请记录 -->
+      <div class="history-card">
+        <div class="history-header">
+          <div class="history-title">邀请记录</div>
+          <div class="history-count" id="historyCount">共0人</div>
+        </div>
+        
+        <div class="history-list" id="historyList">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+      
+      <!-- 规则说明 -->
+      <div class="rules-section">
+        <div class="rules-title">📋 活动规则</div>
+        <ul class="rules-list">
+          <li>• 好友通过您的邀请码注册，双方均可获得奖励</li>
+          <li>• 每位好友仅限首次注册有效，重复邀请无效</li>
+          <li>• 免费分析次数可用于手相、舌相、八字运势等功能</li>
+          <li>• 次数永久有效，用完即止，可继续邀请获取更多</li>
+          <li>• 如发现作弊行为，平台有权取消奖励资格</li>
+        </ul>
+      </div>
+      
+      <!-- 返回按钮 -->
+      <div class="back-section">
+        <button class="btn-back" onclick="invite.goHome()">🏠 返回首页</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast 提示 -->
+  <div class="toast" id="toast"></div>
+  
+  <script>
+    const invite = {
+      data: {
+        code: '',
+        invites: [],
+        freeAnalysis: 3
+      },
+      
+      init() {
+        this.loadData();
+        this.generateCode();
+        this.updateUI();
+      },
+      
+      loadData() {
+        // 加载邀请数据
+        const savedData = localStorage.getItem('inviteData');
+        if (savedData) {
+          this.data = JSON.parse(savedData);
+        }
+        
+        // 加载免费分析次数
+        const freeCount = localStorage.getItem('freeAnalysisCount');
+        if (freeCount) {
+          this.data.freeAnalysis = parseInt(freeCount);
+        }
+      },
+      
+      saveData() {
+        localStorage.setItem('inviteData', JSON.stringify(this.data));
+        localStorage.setItem('freeAnalysisCount', this.data.freeAnalysis);
+      },
+      
+      generateCode() {
+        // 生成或获取邀请码
+        if (!this.data.code) {
+          const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          let code = '';
+          for (let i = 0; i < 6; i++) {
+            code += chars[Math.floor(Math.random() * chars.length)];
+          }
+          this.data.code = code;
+          this.saveData();
+        }
+      },
+      
+      updateUI() {
+        // 更新邀请码
+        document.getElementById('inviteCode').textContent = this.data.code;
+        
+        // 更新统计
+        document.getElementById('inviteCount').textContent = this.data.invites.length;
+        document.getElementById('rewardCount').textContent = this.data.invites.length * 3;
+        document.getElementById('remainingCount').textContent = this.data.freeAnalysis;
+        
+        // 更新记录
+        this.renderHistory();
+      },
+      
+      renderHistory() {
+        const listEl = document.getElementById('historyList');
+        const countEl = document.getElementById('historyCount');
+        
+        countEl.textContent = `共${this.data.invites.length}人`;
+        
+        if (this.data.invites.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-history">
+              <div class="empty-icon">📭</div>
+              <div>暂无邀请记录</div>
+              <div style="font-size: 13px; margin-top: 8px;">快去分享邀请码吧~</div>
+            </div>
+          `;
+          return;
+        }
+        
+        listEl.innerHTML = this.data.invites.map(invite => `
+          <div class="history-item">
+            <div class="history-avatar">${invite.name ? invite.name[0] : '?'}</div>
+            <div class="history-info">
+              <div class="history-name">${invite.name || '神秘好友'}</div>
+              <div class="history-time">${invite.time}</div>
+            </div>
+            <div class="history-reward">+3次</div>
+          </div>
+        `).join('');
+      },
+      
+      copyCode() {
+        const code = this.data.code;
+        
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(code).then(() => {
+            this.showToast('邀请码已复制！');
+            this.animateCopyBtn();
+          });
+        } else {
+          // 降级方案
+          const input = document.createElement('input');
+          input.value = code;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand('copy');
+          document.body.removeChild(input);
+          this.showToast('邀请码已复制！');
+          this.animateCopyBtn();
+        }
+      },
+      
+      animateCopyBtn() {
+        const btn = document.getElementById('copyBtn');
+        btn.classList.add('copied');
+        btn.innerHTML = '✅ 已复制';
+        
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '📋 复制邀请码';
+        }, 2000);
+      },
+      
+      share(platform) {
+        const code = this.data.code;
+        const shareText = `我在用 Unicare AI 健康运势分析，超准！\n\n使用我的邀请码【${code}】注册，我们双方都能获得3次免费完整分析~\n\n👉 https://unicare-web.vercel.app`;
+        
+        switch(platform) {
+          case 'wechat':
+            this.showToast('请截图分享到微信');
+            break;
+          case 'moment':
+            this.showToast('请截图分享到朋友圈');
+            break;
+          case 'qq':
+            this.showToast('请复制内容分享到QQ');
+            break;
+          case 'link':
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(shareText).then(() => {
+                this.showToast('分享内容已复制！');
+              });
+            }
+            break;
+        }
+      },
+      
+      showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2000);
+      },
+      
+      goHome() {
+        window.location.href = '../../index.html';
+      },
+      
+      // 模拟被邀请（用于测试）
+      simulateInvite(name) {
+        this.data.invites.push({
+          name: name || `好友${this.data.invites.length + 1}`,
+          time: new Date().toLocaleString('zh-CN'),
+          code: this.data.code
+        });
+        this.data.freeAnalysis += 3;
+        this.saveData();
+        this.updateUI();
+      }
+    };
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      invite.init();
+    });
+  </script>
+</body>
+</html>
