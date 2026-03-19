@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>用户问卷 - Unicare</title>
   <link rel="stylesheet" href="../../css/style.css">
-  
+
   <!-- Vercel Analytics -->
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
-  
+
   <style>
     .survey-page {
       max-width: 480px;
@@ -19,37 +19,51 @@
       min-height: 100vh;
       background: var(--bg);
     }
-    
+
     .survey-header {
       text-align: center;
       padding: 30px 20px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       color: white;
     }
-    
+
     .survey-header .icon {
       font-size: 50px;
       margin-bottom: 10px;
     }
-    
+
     .survey-header h1 {
       font-size: 22px;
       font-weight: 700;
       margin-bottom: 8px;
     }
-    
+
     .survey-header p {
       font-size: 14px;
       opacity: 0.9;
     }
-    
+
+    /* 价值说明 */
+    .survey-value-prop {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+    }
+
+    .value-prop-item {
+      font-size: 13px;
+      padding: 6px 0;
+      color: rgba(255,255,255,0.95);
+    }
+
     /* Tab 切换 */
     .survey-tabs {
       display: flex;
       background: white;
       border-bottom: 1px solid #eee;
     }
-    
+
     .survey-tab {
       flex: 1;
       padding: 15px;
@@ -61,11 +75,11 @@
       position: relative;
       transition: all 0.3s;
     }
-    
+
     .survey-tab.active {
       color: var(--primary);
     }
-    
+
     .survey-tab.active::after {
       content: '';
       position: absolute;
@@ -76,14 +90,14 @@
       background: var(--primary);
       border-radius: 3px;
     }
-    
+
     .survey-content {
       padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
-    
+
     /* 进度条 */
     .progress-bar {
       background: #E8E8E8;
@@ -92,21 +106,21 @@
       margin-bottom: 20px;
       overflow: hidden;
     }
-    
+
     .progress-fill {
       background: linear-gradient(90deg, var(--primary), var(--primary-light));
       height: 100%;
       border-radius: 10px;
       transition: width 0.3s ease;
     }
-    
+
     .progress-text {
       text-align: center;
       font-size: 13px;
       color: #888;
       margin-bottom: 20px;
     }
-    
+
     /* 分组标题 */
     .section-group {
       margin-bottom: 25px;
@@ -114,7 +128,7 @@
       flex-direction: column;
       gap: 15px;
     }
-    
+
     .group-title {
       font-size: 16px;
       font-weight: 700;
@@ -124,11 +138,11 @@
       align-items: center;
       gap: 8px;
     }
-    
+
     .group-icon {
       font-size: 20px;
     }
-    
+
     /* 问题卡片 */
     .question-card {
       background: white;
@@ -139,7 +153,7 @@
       width: 100%;
       box-sizing: border-box;
     }
-    
+
     .question-text {
       font-size: 16px;
       font-weight: 600;
@@ -147,13 +161,13 @@
       color: #333;
       line-height: 1.5;
     }
-    
+
     .option-list {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
     }
-    
+
     .option-item {
       background: #f5f5f5;
       border: 2px solid transparent;
@@ -167,17 +181,17 @@
       gap: 6px;
       white-space: nowrap;
     }
-    
+
     .option-item:hover {
       background: #eee;
     }
-    
+
     .option-item.selected {
       background: rgba(107, 91, 149, 0.1);
       border-color: var(--primary);
       color: var(--primary);
     }
-    
+
     /* 建议结果卡片 */
     .advice-result {
       background: white;
@@ -186,7 +200,7 @@
       margin-bottom: 20px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
-    
+
     .advice-title {
       font-size: 18px;
       font-weight: 700;
@@ -194,7 +208,7 @@
       margin-bottom: 20px;
       text-align: center;
     }
-    
+
     .advice-item {
       background: linear-gradient(135deg, #f8f8f8 0%, #fff 100%);
       border-radius: 12px;
@@ -202,25 +216,25 @@
       margin-bottom: 12px;
       border-left: 4px solid var(--primary);
     }
-    
+
     .advice-label {
       font-size: 13px;
       color: #888;
       margin-bottom: 4px;
     }
-    
+
     .advice-content {
       font-size: 15px;
       color: #333;
       font-weight: 500;
     }
-    
+
     /* 提交按钮 */
     .submit-section {
       padding: 20px;
       text-align: center;
     }
-    
+
     .btn-submit {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       color: white;
@@ -234,43 +248,59 @@
       max-width: 300px;
       transition: all 0.3s;
     }
-    
+
     .btn-submit:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(107,91,149,0.3);
     }
-    
+
     .btn-submit:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
     }
-    
+
+    /* 跳过按钮 */
+    .btn-skip {
+      background: transparent;
+      color: #888;
+      border: none;
+      padding: 12px 30px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 15px;
+    }
+
+    .btn-skip:hover {
+      color: var(--primary);
+    }
+
     /* 结果页面 */
     .result-page {
       text-align: center;
       padding: 40px 20px;
     }
-    
+
     .result-icon {
       font-size: 70px;
       margin-bottom: 20px;
     }
-    
+
     .result-title {
       font-size: 22px;
       font-weight: 700;
       color: var(--primary);
       margin-bottom: 15px;
     }
-    
+
     .result-desc {
       font-size: 15px;
       color: #666;
       margin-bottom: 30px;
       line-height: 1.6;
     }
-    
+
     .benefit-card {
       background: linear-gradient(135deg, #FFF9E6 0%, #FFF5D6 100%);
       border-radius: 20px;
@@ -279,14 +309,14 @@
       border: 2px solid #FFE4A1;
       text-align: left;
     }
-    
+
     .benefit-title {
       font-size: 16px;
       font-weight: 700;
       color: #D4A853;
       margin-bottom: 15px;
     }
-    
+
     .benefit-item {
       display: flex;
       align-items: center;
@@ -294,12 +324,12 @@
       margin-bottom: 10px;
       font-size: 14px;
     }
-    
+
     /* 隐藏元素 */
     .hidden {
       display: none !important;
     }
-    
+
     /* 输入框 */
     .text-input {
       width: 100%;
@@ -309,7 +339,7 @@
       font-size: 15px;
       margin-top: 10px;
     }
-    
+
     .text-input:focus {
       outline: none;
       border-color: var(--primary);
@@ -323,8 +353,13 @@
       <div class="icon">📋</div>
       <h1>完善您的信息</h1>
       <p>帮助我们为您提供更精准的分析和建议</p>
+      <div class="survey-value-prop">
+        <div class="value-prop-item">🎁 填写后可获得专属运势解读</div>
+        <div class="value-prop-item">✨ 个性化健康建议</div>
+        <div class="value-prop-item">🔮 定制运势提醒</div>
+      </div>
     </div>
-    
+
     <!-- Tab 切换 -->
     <div class="survey-tabs">
       <div class="survey-tab active" onclick="survey.switchTab('info')" data-tab="info">
@@ -334,21 +369,21 @@
         💡 获取建议
       </div>
     </div>
-    
+
     <!-- 信息调查部分 -->
     <div id="infoSection" class="survey-content">
       <div class="progress-bar">
         <div class="progress-fill" id="infoProgress" style="width: 0%"></div>
       </div>
       <div class="progress-text" id="infoProgressText">填写基础信息，获取个性化服务</div>
-      
+
       <!-- 基本信息组 -->
       <div class="section-group">
         <div class="group-title">
           <span class="group-icon">👤</span>
           基本信息
         </div>
-        
+
         <div class="question-card">
           <div class="question-text">您的年龄段？</div>
           <div class="option-list" data-question="age">
@@ -359,7 +394,7 @@
             <div class="option-item" data-value="55+">55岁以上</div>
           </div>
         </div>
-        
+
         <div class="question-card">
           <div class="question-text">您的性别？</div>
           <div class="option-list" data-question="gender">
@@ -369,14 +404,14 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 关注领域组 -->
       <div class="section-group">
         <div class="group-title">
           <span class="group-icon">⭐</span>
           关注领域（可多选）
         </div>
-        
+
         <div class="question-card">
           <div class="question-text">您最关注哪些方面？</div>
           <div class="option-list" data-question="interests">
@@ -389,14 +424,14 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 使用习惯组 -->
       <div class="section-group">
         <div class="group-title">
           <span class="group-icon">🎯</span>
           使用习惯
         </div>
-        
+
         <div class="question-card">
           <div class="question-text">您使用的主要目的？</div>
           <div class="option-list" data-question="purpose">
@@ -408,7 +443,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 获取建议部分 -->
     <div id="adviceSection" class="survey-content hidden">
       <div class="question-card">
@@ -422,7 +457,7 @@
           <div class="option-item" data-value="exercise">🏃 运动锻炼</div>
         </div>
       </div>
-      
+
       <div class="question-card">
         <div class="question-text">您的日常作息类型？</div>
         <div class="option-list" data-question="schedule">
@@ -432,7 +467,7 @@
           <div class="option-item" data-value="irregular">🔄 不规律</div>
         </div>
       </div>
-      
+
       <div class="question-card">
         <div class="question-text">您偏好的运势提醒频率？</div>
         <div class="option-list" data-question="frequency">
@@ -442,31 +477,32 @@
           <div class="option-item" data-value="never">不需要</div>
         </div>
       </div>
-      
+
       <!-- 建议结果 -->
       <div id="adviceResult" class="advice-result hidden">
         <div class="advice-title">🎯 为您定制的建议</div>
         <div id="adviceList"></div>
       </div>
     </div>
-    
+
     <!-- 提交按钮 -->
     <div class="submit-section">
       <button class="btn-submit" id="submitBtn" onclick="survey.submit()">完成并获取建议</button>
+      <button class="btn-skip" onclick="survey.skip()">跳过，先去体验 →</button>
     </div>
   </div>
-  
+
   <script>
     const survey = {
       answers: {},
       currentTab: 'info',
-      
+
       init() {
         this.loadSavedAnswers();
         this.bindEvents();
         this.updateProgress();
       },
-      
+
       loadSavedAnswers() {
         const saved = localStorage.getItem('surveyAnswers');
         if (saved) {
@@ -474,12 +510,12 @@
           this.restoreSelections();
         }
       },
-      
+
       restoreSelections() {
         document.querySelectorAll('.option-list').forEach(list => {
           const question = list.dataset.question;
           const answer = this.answers[question];
-          
+
           if (answer) {
             if (Array.isArray(answer)) {
               answer.forEach(val => {
@@ -493,14 +529,14 @@
           }
         });
       },
-      
+
       bindEvents() {
         document.querySelectorAll('.option-item').forEach(item => {
           item.addEventListener('click', (e) => {
             const list = e.target.closest('.option-list');
             const question = list.dataset.question;
             const value = e.target.dataset.value;
-            
+
             // 多选处理
             if (question === 'interests' || question === 'improve') {
               e.target.classList.toggle('selected');
@@ -512,10 +548,10 @@
               e.target.classList.add('selected');
               this.answers[question] = value;
             }
-            
+
             this.saveAnswers();
             this.updateProgress();
-            
+
             // 如果在建议页，实时生成建议
             if (this.currentTab === 'advice') {
               this.generateAdvice();
@@ -523,23 +559,23 @@
           });
         });
       },
-      
+
       saveAnswers() {
         localStorage.setItem('surveyAnswers', JSON.stringify(this.answers));
       },
-      
+
       switchTab(tab) {
         this.currentTab = tab;
-        
+
         // 更新 Tab 样式
         document.querySelectorAll('.survey-tab').forEach(el => {
           el.classList.toggle('active', el.dataset.tab === tab);
         });
-        
+
         // 切换内容
         document.getElementById('infoSection').classList.toggle('hidden', tab !== 'info');
         document.getElementById('adviceSection').classList.toggle('hidden', tab !== 'advice');
-        
+
         // 更新按钮文字
         const btn = document.getElementById('submitBtn');
         if (tab === 'info') {
@@ -549,7 +585,7 @@
           this.generateAdvice();
         }
       },
-      
+
       updateProgress() {
         const totalQuestions = 5; // info部分的问题数
         let answered = 0;
@@ -558,15 +594,15 @@
             answered++;
           }
         });
-        
+
         const progress = (answered / totalQuestions) * 100;
         document.getElementById('infoProgress').style.width = `${progress}%`;
       },
-      
+
       generateAdvice() {
         const adviceList = document.getElementById('adviceList');
         const resultDiv = document.getElementById('adviceResult');
-        
+
         const adviceMap = {
           sleep: { title: '睡眠改善', content: '建议每晚11点前入睡，睡前避免使用电子产品，可尝试冥想助眠。' },
           energy: { title: '精力提升', content: '建议适度运动，多晒太阳，补充维生素B族，保持规律作息。' },
@@ -575,9 +611,9 @@
           diet: { title: '饮食调理', content: '建议均衡饮食，少油少盐，多吃蔬果，定时定量进餐。' },
           exercise: { title: '运动计划', content: '建议每周至少3次运动，每次30分钟，可选择慢跑、瑜伽等。' }
         };
-        
+
         const improvements = this.answers.improve || [];
-        
+
         if (improvements.length > 0) {
           resultDiv.classList.remove('hidden');
           adviceList.innerHTML = improvements.map(item => {
@@ -591,7 +627,7 @@
           }).join('');
         }
       },
-      
+
       submit() {
         if (this.currentTab === 'info') {
           // 检查是否填完基本信息
@@ -607,11 +643,11 @@
           this.showResult();
         }
       },
-      
+
       showResult() {
         const interests = this.answers.interests || [];
         const labels = { health: '健康', career: '事业', wealth: '财富', love: '感情', family: '家庭', study: '学业' };
-        
+
         document.querySelector('.survey-page').innerHTML = `
           <div class="result-page">
             <div class="result-icon">🎉</div>
@@ -620,24 +656,30 @@
               我们已根据您的信息为您定制了专属服务<br>
               现在开始使用 Unicare 吧
             </p>
-            
+
             <div class="benefit-card">
               <div class="benefit-title">✨ 您获得的权益</div>
               <div class="benefit-item">🎁 免费体验 3 次完整分析</div>
               <div class="benefit-item">🔔 个性化运势推送</div>
               <div class="benefit-item">📊 专属健康建议</div>
             </div>
-            
+
             <button class="btn-submit" onclick="survey.goHome()">开始使用</button>
           </div>
         `;
       },
-      
+
       goHome() {
         window.location.href = '../../index.html';
+      },
+
+      skip() {
+        // 标记为已跳过
+        localStorage.setItem('surveySkipped', 'true');
+        this.goHome();
       }
     };
-    
+
     // 初始化
     document.addEventListener('DOMContentLoaded', () => {
       survey.init();

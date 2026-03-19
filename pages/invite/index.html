@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>邀请好友 - Unicare</title>
   <link rel="stylesheet" href="../../css/style.css">
-  
+
   <!-- Vercel Analytics -->
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
-  
+
   <style>
     .invite-page {
       max-width: 480px;
@@ -19,36 +19,36 @@
       min-height: 100vh;
       background: linear-gradient(180deg, #6B5B95 0%, #8B7BB5 100%);
     }
-    
+
     .invite-header {
       padding: 40px 20px;
       text-align: center;
       color: white;
     }
-    
+
     .invite-header .icon {
       font-size: 70px;
       margin-bottom: 15px;
     }
-    
+
     .invite-header h1 {
       font-size: 26px;
       font-weight: 700;
       margin-bottom: 10px;
     }
-    
+
     .invite-header p {
       font-size: 15px;
       opacity: 0.9;
     }
-    
+
     .invite-content {
       background: var(--bg);
       border-radius: 30px 30px 0 0;
       padding: 30px 20px;
       min-height: calc(100vh - 220px);
     }
-    
+
     /* 统计卡片 */
     .stats-card {
       background: white;
@@ -57,30 +57,30 @@
       margin-bottom: 20px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
-    
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       text-align: center;
     }
-    
+
     .stat-item {
       padding: 10px;
     }
-    
+
     .stat-value {
       font-size: 32px;
       font-weight: 800;
       color: var(--primary);
       margin-bottom: 5px;
     }
-    
+
     .stat-label {
       font-size: 13px;
       color: #888;
     }
-    
+
     .input-code-section {
       background: linear-gradient(135deg, #E6F7FF 0%, #fff 100%);
       border-radius: 20px;
@@ -200,13 +200,13 @@
       border: 2px solid #FFE4A1;
       text-align: center;
     }
-    
+
     .code-label {
       font-size: 14px;
       color: #B8893C;
       margin-bottom: 12px;
     }
-    
+
     .code-display {
       font-size: 36px;
       font-weight: 800;
@@ -215,13 +215,13 @@
       margin-bottom: 15px;
       font-family: 'Courier New', monospace;
     }
-    
+
     .code-action {
       display: flex;
       gap: 10px;
       justify-content: center;
     }
-    
+
     .btn-copy {
       background: linear-gradient(135deg, #D4A853 0%, #E8C878 100%);
       color: white;
@@ -236,34 +236,134 @@
       gap: 6px;
       transition: all 0.3s;
     }
-    
+
     .btn-copy:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(212, 168, 83, 0.4);
     }
-    
+
     .btn-copy.copied {
       background: #52C41A;
     }
-    
+
+    /* 分享海报 */
+    .poster-section {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .poster-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .poster-preview {
+      background: #f8f8f8;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .poster-card {
+      background: linear-gradient(180deg, #6B5B95 0%, #8B7BB5 100%);
+      border-radius: 16px;
+      padding: 30px;
+      color: white;
+      text-align: center;
+    }
+
+    .poster-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .poster-logo {
+      font-size: 40px;
+    }
+
+    .poster-app-name {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .poster-content {
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    .poster-slogan {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 15px;
+    }
+
+    .poster-invite-text {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .poster-code {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      margin-bottom: 15px;
+      background: rgba(255,255,255,0.25);
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    .poster-tip {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .poster-footer {
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 15px;
+    }
+
+    .poster-url {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .poster-hint {
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      padding: 10px;
+      background: #f8f8f8;
+      border-radius: 10px;
+    }
+
     /* 分享按钮 */
     .share-section {
       margin-bottom: 25px;
     }
-    
+
     .share-title {
       font-size: 16px;
       font-weight: 600;
       margin-bottom: 15px;
       color: #333;
     }
-    
+
     .share-buttons {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
     }
-    
+
     .share-btn {
       background: white;
       border: none;
@@ -273,22 +373,22 @@
       transition: all 0.3s;
       text-align: center;
     }
-    
+
     .share-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    
+
     .share-icon {
       font-size: 32px;
       margin-bottom: 6px;
     }
-    
+
     .share-name {
       font-size: 12px;
       color: #666;
     }
-    
+
     /* 奖励说明 */
     .reward-card {
       background: linear-gradient(135deg, #F6FFED 0%, #fff 100%);
@@ -297,7 +397,7 @@
       border: 2px solid #B7EB8F;
       margin-bottom: 20px;
     }
-    
+
     .reward-title {
       font-size: 17px;
       font-weight: 700;
@@ -307,39 +407,39 @@
       align-items: center;
       gap: 8px;
     }
-    
+
     .reward-item {
       display: flex;
       align-items: flex-start;
       gap: 12px;
       margin-bottom: 15px;
     }
-    
+
     .reward-item:last-child {
       margin-bottom: 0;
     }
-    
+
     .reward-icon {
       font-size: 24px;
       flex-shrink: 0;
     }
-    
+
     .reward-content {
       flex: 1;
     }
-    
+
     .reward-name {
       font-size: 15px;
       font-weight: 600;
       color: #333;
       margin-bottom: 4px;
     }
-    
+
     .reward-desc {
       font-size: 13px;
       color: #888;
     }
-    
+
     /* 邀请记录 */
     .history-card {
       background: white;
@@ -347,19 +447,19 @@
       padding: 25px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
-    
+
     .history-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
-    
+
     .history-title {
       font-size: 17px;
       font-weight: 700;
     }
-    
+
     .history-count {
       font-size: 13px;
       color: #888;
@@ -367,13 +467,13 @@
       padding: 6px 12px;
       border-radius: 15px;
     }
-    
+
     .history-list {
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
-    
+
     .history-item {
       display: flex;
       align-items: center;
@@ -382,7 +482,7 @@
       background: #f8f8f8;
       border-radius: 12px;
     }
-    
+
     .history-avatar {
       width: 48px;
       height: 48px;
@@ -395,69 +495,69 @@
       color: white;
       flex-shrink: 0;
     }
-    
+
     .history-info {
       flex: 1;
     }
-    
+
     .history-name {
       font-size: 15px;
       font-weight: 600;
       margin-bottom: 4px;
     }
-    
+
     .history-time {
       font-size: 12px;
       color: #888;
     }
-    
+
     .history-reward {
       font-size: 14px;
       color: #52C41A;
       font-weight: 600;
     }
-    
+
     .empty-history {
       text-align: center;
       padding: 40px 20px;
       color: #888;
     }
-    
+
     .empty-icon {
       font-size: 60px;
       margin-bottom: 15px;
       opacity: 0.5;
     }
-    
+
     /* 规则说明 */
     .rules-section {
       margin-top: 25px;
       padding-top: 25px;
       border-top: 1px dashed #ddd;
     }
-    
+
     .rules-title {
       font-size: 14px;
       color: #888;
       margin-bottom: 12px;
     }
-    
+
     .rules-list {
       font-size: 13px;
       color: #999;
       line-height: 1.8;
     }
-    
+
     .rules-list li {
       margin-bottom: 6px;
     }
-    
+
     /* 返回按钮 */
     .back-section {
       padding: 20px;
       text-align: center;
     }
-    
+
     .btn-back {
       background: white;
       color: var(--primary);
@@ -469,12 +569,12 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    
+
     .btn-back:hover {
       background: var(--primary);
       color: white;
     }
-    
+
     /* Toast 提示 */
     .toast {
       position: fixed;
@@ -491,7 +591,7 @@
       visibility: hidden;
       transition: all 0.3s;
     }
-    
+
     .toast.show {
       opacity: 1;
       visibility: visible;
@@ -506,7 +606,7 @@
       <h1>邀请好友 共享福利</h1>
       <p>每邀请1位好友，双方各得3次免费分析</p>
     </div>
-    
+
     <!-- 内容区 -->
     <div class="invite-content">
       <!-- 统计数据 -->
@@ -526,7 +626,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 输入邀请码 -->
       <div class="input-code-section">
         <div class="input-code-header">
@@ -548,7 +648,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 邀请码 -->
       <div class="code-section">
         <div class="code-label">我的专属邀请码</div>
@@ -559,7 +659,30 @@
           </button>
         </div>
       </div>
-      
+
+      <!-- 分享海报 -->
+      <div class="poster-section" id="posterSection">
+        <div class="poster-title">📱 分享海报</div>
+        <div class="poster-preview" id="posterPreview">
+          <div class="poster-card">
+            <div class="poster-header">
+              <div class="poster-logo">🦄</div>
+              <div class="poster-app-name">Unicare</div>
+            </div>
+            <div class="poster-content">
+              <div class="poster-slogan">AI读懂你的健康和运势</div>
+              <div class="poster-invite-text">好友邀请你体验</div>
+              <div class="poster-code" id="posterCode">------</div>
+              <div class="poster-tip">扫码或输入邀请码，双方各得3次免费分析</div>
+            </div>
+            <div class="poster-footer">
+              <div class="poster-url">unicare-web.vercel.app</div>
+            </div>
+          </div>
+        </div>
+        <div class="poster-hint">👆 长按上方海报截图分享</div>
+      </div>
+
       <!-- 分享按钮 -->
       <div class="share-section">
         <div class="share-title">分享给好友</div>
@@ -582,11 +705,11 @@
           </button>
         </div>
       </div>
-      
+
       <!-- 奖励说明 -->
       <div class="reward-card">
         <div class="reward-title">🎉 邀请奖励</div>
-        
+
         <div class="reward-item">
           <div class="reward-icon">🎁</div>
           <div class="reward-content">
@@ -594,7 +717,7 @@
             <div class="reward-desc">每邀请1位好友注册，您和好友各得3次免费完整分析</div>
           </div>
         </div>
-        
+
         <div class="reward-item">
           <div class="reward-icon">🏆</div>
           <div class="reward-content">
@@ -602,7 +725,7 @@
             <div class="reward-desc">邀请3人额外+5次，邀请5人额外+10次，邀请10人解锁无限分析</div>
           </div>
         </div>
-        
+
         <div class="reward-item">
           <div class="reward-icon">💎</div>
           <div class="reward-content">
@@ -611,19 +734,19 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 邀请记录 -->
       <div class="history-card">
         <div class="history-header">
           <div class="history-title">邀请记录</div>
-          <div class="history-count" id="historyCount">共0人</div>
+          <div class="history-count" id="historyCount">已有0人使用你的邀请码</div>
         </div>
-        
+
         <div class="history-list" id="historyList">
           <!-- 动态生成 -->
         </div>
       </div>
-      
+
       <!-- 规则说明 -->
       <div class="rules-section">
         <div class="rules-title">📋 活动规则</div>
@@ -635,17 +758,17 @@
           <li>• 如发现作弊行为，平台有权取消奖励资格</li>
         </ul>
       </div>
-      
+
       <!-- 返回按钮 -->
       <div class="back-section">
         <button class="btn-back" onclick="invite.goHome()">🏠 返回首页</button>
       </div>
     </div>
   </div>
-  
+
   <!-- Toast 提示 -->
   <div class="toast" id="toast"></div>
-  
+
   <script>
     const invite = {
       data: {
@@ -653,33 +776,33 @@
         invites: [],
         freeAnalysis: 3
       },
-      
+
       init() {
         this.loadData();
         this.generateCode();
         this.checkUnlockStatus();
         this.updateUI();
       },
-      
+
       loadData() {
         // 加载邀请数据
         const savedData = localStorage.getItem('inviteData');
         if (savedData) {
           this.data = JSON.parse(savedData);
         }
-        
+
         // 加载免费分析次数
         const freeCount = localStorage.getItem('freeAnalysisCount');
         if (freeCount) {
           this.data.freeAnalysis = parseInt(freeCount);
         }
       },
-      
+
       saveData() {
         localStorage.setItem('inviteData', JSON.stringify(this.data));
         localStorage.setItem('freeAnalysisCount', this.data.freeAnalysis);
       },
-      
+
       generateCode() {
         // 生成或获取邀请码
         if (!this.data.code) {
@@ -692,10 +815,16 @@
           this.saveData();
         }
       },
-      
+
       updateUI() {
         // 更新邀请码
         document.getElementById('inviteCode').textContent = this.data.code;
+        
+        // 更新海报上的邀请码
+        const posterCode = document.getElementById('posterCode');
+        if (posterCode) {
+          posterCode.textContent = this.data.code;
+        }
         
         // 更新统计
         document.getElementById('inviteCount').textContent = this.data.invites.length;
@@ -705,24 +834,25 @@
         // 更新记录
         this.renderHistory();
       },
-      
+
       renderHistory() {
         const listEl = document.getElementById('historyList');
         const countEl = document.getElementById('historyCount');
-        
-        countEl.textContent = `共${this.data.invites.length}人`;
-        
-        if (this.data.invites.length === 0) {
+
+        const inviteCount = this.data.invites.length;
+        countEl.textContent = `已有${inviteCount}人使用你的邀请码`;
+
+        if (inviteCount === 0) {
           listEl.innerHTML = `
             <div class="empty-history">
               <div class="empty-icon">📭</div>
               <div>暂无邀请记录</div>
-              <div style="font-size: 13px; margin-top: 8px;">快去分享邀请码吧~</div>
+              <div style="font-size: 13px; margin-top: 8px;">分享邀请码给好友，解锁更多福利~</div>
             </div>
           `;
           return;
         }
-        
+
         listEl.innerHTML = this.data.invites.map(invite => `
           <div class="history-item">
             <div class="history-avatar">${invite.name ? invite.name[0] : '?'}</div>
@@ -734,10 +864,10 @@
           </div>
         `).join('');
       },
-      
+
       copyCode() {
         const code = this.data.code;
-        
+
         if (navigator.clipboard) {
           navigator.clipboard.writeText(code).then(() => {
             this.showToast('邀请码已复制！');
@@ -755,22 +885,23 @@
           this.animateCopyBtn();
         }
       },
-      
+
       animateCopyBtn() {
         const btn = document.getElementById('copyBtn');
         btn.classList.add('copied');
         btn.innerHTML = '✅ 已复制';
-        
+
         setTimeout(() => {
           btn.classList.remove('copied');
           btn.innerHTML = '📋 复制邀请码';
         }, 2000);
       },
-      
+
       share(platform) {
         const code = this.data.code;
-        const shareText = `我在用 Unicare AI 健康运势分析，超准！\n\n使用我的邀请码【${code}】注册，我们双方都能获得3次免费完整分析~\n\n👉 https://unicare-web.vercel.app`;
-        
+        const shareLink = `https://unicare-web.vercel.app?invite=${code}`;
+        const shareText = `我在用 Unicare AI 健康运势分析，超准！\n\n使用我的邀请码【${code}】注册，我们双方都能获得3次免费完整分析~\n\n👉 ${shareLink}`;
+
         switch(platform) {
           case 'wechat':
             this.showToast('请截图分享到微信');
@@ -783,33 +914,33 @@
             break;
           case 'link':
             if (navigator.clipboard) {
-              navigator.clipboard.writeText(shareText).then(() => {
-                this.showToast('分享内容已复制！');
+              navigator.clipboard.writeText(shareLink).then(() => {
+                this.showToast('邀请链接已复制！');
               });
             }
             break;
         }
       },
-      
+
       showToast(message) {
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.classList.add('show');
-        
+
         setTimeout(() => {
           toast.classList.remove('show');
         }, 2000);
       },
-      
+
       goHome() {
         window.location.href = '../../index.html';
       },
-      
+
       // 检查是否已解锁
       checkUnlockStatus() {
         const unlocked = localStorage.getItem('deepReportUnlocked');
         const usedCode = localStorage.getItem('usedInviteCode');
-        
+
         if (unlocked === 'true' && usedCode) {
           document.getElementById('unlockBenefits').style.display = 'block';
           document.getElementById('inputCode').value = usedCode;
@@ -821,7 +952,7 @@
 
       verifyCode() {
         const inputCode = document.getElementById('inputCode').value.trim().toUpperCase();
-        
+
         if (inputCode.length !== 6) {
           this.showToast('请输入6位邀请码');
           return;
@@ -843,27 +974,40 @@
         // 模拟验证（实际应该调用后端API验证）
         // 这里接受任何6位字母数字组合作为有效邀请码
         const isValid = /^[A-Z0-9]{6}$/.test(inputCode);
-        
+
         if (isValid) {
           // 解锁深度报告
           localStorage.setItem('deepReportUnlocked', 'true');
           localStorage.setItem('usedInviteCode', inputCode);
-          
+
           // 增加免费次数
           this.data.freeAnalysis += 3;
           this.saveData();
-          
+
           // 显示解锁内容
           document.getElementById('unlockBenefits').style.display = 'block';
           document.getElementById('inputCode').disabled = true;
           document.querySelector('.btn-verify').textContent = '已解锁';
           document.querySelector('.btn-verify').disabled = true;
+
+          // 显示解锁动画
+          this.showUnlockAnimation();
           
-          this.showToast('🎉 邀请码验证成功！');
           this.updateUI();
         } else {
           this.showToast('邀请码无效，请检查输入');
         }
+      },
+
+      showUnlockAnimation() {
+        const overlay = document.getElementById('unlockOverlay');
+        overlay.style.display = 'flex';
+      },
+
+      closeUnlockAnimation() {
+        const overlay = document.getElementById('unlockOverlay');
+        overlay.style.display = 'none';
+        this.showToast('🎉 邀请码验证成功！');
       },
       simulateInvite(name) {
         this.data.invites.push({
@@ -876,11 +1020,118 @@
         this.updateUI();
       }
     };
-    
+
     // 初始化
     document.addEventListener('DOMContentLoaded', () => {
       invite.init();
     });
   </script>
+
+  <!-- 解锁成功动画 -->
+  <div class="unlock-overlay" id="unlockOverlay" style="display:none;">
+    <div class="unlock-animation">
+      <div class="unlock-confetti">🎉</div>
+      <div class="unlock-title-anim">恭喜解锁完整报告！</div>
+      <div class="unlock-benefits-anim">
+        <div class="unlock-benefit-item">✅ 深度八字分析</div>
+        <div class="unlock-benefit-item">✅ 年度运势预测</div>
+        <div class="unlock-benefit-item">✅ 专家级健康建议</div>
+        <div class="unlock-benefit-item">✅ +3次免费分析次数</div>
+      </div>
+      <button class="unlock-btn" onclick="invite.closeUnlockAnimation()">开始体验</button>
+    </div>
+  </div>
+
+  <style>
+    /* 解锁动画 */
+    .unlock-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes confetti {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .unlock-animation {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      animation: scaleIn 0.5s ease;
+    }
+
+    .unlock-confetti {
+      font-size: 60px;
+      margin-bottom: 20px;
+      animation: confetti 1s ease infinite;
+    }
+
+    .unlock-title-anim {
+      font-size: 24px;
+      font-weight: 800;
+      color: #52C41A;
+      margin-bottom: 25px;
+    }
+
+    .unlock-benefits-anim {
+      background: #f8f8f8;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    .unlock-benefit-item {
+      font-size: 15px;
+      color: #333;
+      padding: 8px 0;
+      border-bottom: 1px dashed #ddd;
+    }
+
+    .unlock-benefit-item:last-child {
+      border-bottom: none;
+    }
+
+    .unlock-btn {
+      background: linear-gradient(135deg, #52C41A 0%, #73D13D 100%);
+      color: white;
+      border: none;
+      padding: 16px 50px;
+      border-radius: 25px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .unlock-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(82, 196, 26, 0.4);
+    }
+  </style>
 </body>
 </html>

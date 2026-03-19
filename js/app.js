@@ -1,4 +1,4 @@
-// 应用主逻辑 - v1.1.0 接入 Kimi AI + 舌相分析
+// 应用主逻辑 - v1.2.0 邀请闭环 + 首次引导 + AI透明度提升
 const app = {
   currentPage: 'home',
   selectedGender: 'male',
@@ -15,12 +15,133 @@ const app = {
     }
   },
 
+  // ========== 邀请码处理 ==========
+  parseInviteCode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteCode = urlParams.get('invite');
+    return inviteCode ? inviteCode.toUpperCase() : null;
+  },
+
+  checkInviteCode() {
+    const inviteCode = this.parseInviteCode();
+    if (!inviteCode) return;
+    
+    // 检查是否已经使用过邀请码
+    const usedCode = localStorage.getItem('usedInviteCode');
+    if (usedCode) {
+      console.log('已经使用过邀请码:', usedCode);
+      return;
+    }
+
+    // 保存邀请码到localStorage，以便在邀请页面使用
+    localStorage.setItem('pendingInviteCode', inviteCode);
+    
+    // 显示邀请弹窗
+    this.showInviteModal(inviteCode);
+  },
+
+  showInviteModal(inviteCode) {
+    const modal = document.getElementById('inviteModal');
+    const codeDisplay = document.getElementById('inviteCodeDisplay');
+    if (modal && codeDisplay) {
+      codeDisplay.textContent = inviteCode;
+      modal.style.display = 'flex';
+    }
+  },
+
+  closeInviteModal() {
+    const modal = document.getElementById('inviteModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  },
+
+  acceptInvite() {
+    const inviteCode = localStorage.getItem('pendingInviteCode');
+    if (inviteCode) {
+      localStorage.setItem('usedInviteCode', inviteCode);
+      localStorage.setItem('deepReportUnlocked', 'true');
+      
+      // 增加免费次数
+      const currentCount = parseInt(localStorage.getItem('freeAnalysisCount') || '3');
+      localStorage.setItem('freeAnalysisCount', currentCount + 3);
+      
+      this.closeInviteModal();
+      
+      // 刷新页面状态
+      this.checkUnlockStatus();
+      alert('🎉 邀请码已应用！已获得+3次免费分析次数和深度报告权限');
+    }
+  },
+
+  // ========== 首次引导 ==========
+  checkFirstVisit() {
+    const hasVisited = localStorage.getItem('firstVisit');
+    if (!hasVisited) {
+      localStorage.setItem('firstVisit', 'true');
+      localStorage.setItem('guideStep', '1');
+      this.showGuide();
+    }
+  },
+
+  showGuide() {
+    const currentStep = localStorage.getItem('guideStep') || '1';
+    const guideModal = document.getElementById('guideModal');
+    
+    if (guideModal) {
+      // 隐藏所有步骤
+      document.querySelectorAll('.guide-step').forEach(step => {
+        step.style.display = 'none';
+      });
+      
+      // 显示当前步骤
+      const currentStepEl = document.getElementById(`guideStep${currentStep}`);
+      if (currentStepEl) {
+        currentStepEl.style.display = 'block';
+        guideModal.style.display = 'flex';
+      }
+    }
+  },
+
+  nextGuideStep() {
+    const currentStep = parseInt(localStorage.getItem('guideStep') || '1');
+    const nextStep = currentStep + 1;
+    
+    if (nextStep > 3) {
+      this.closeGuide();
+      localStorage.setItem('guideCompleted', 'true');
+    } else {
+      localStorage.setItem('guideStep', nextStep.toString());
+      this.showGuide();
+    }
+  },
+
+  skipGuide() {
+    this.closeGuide();
+    localStorage.setItem('guideCompleted', 'true');
+  },
+
+  closeGuide() {
+    const guideModal = document.getElementById('guideModal');
+    if (guideModal) {
+      guideModal.style.display = 'none';
+    }
+  },
+
   init() {
     this.setTodayDate()
     this.loadDailyFortune()
     this.loadSavedBazi()
     this.bindNavEvents()
     this.initDateInput()
+    
+    // 检查邀请码
+    this.checkInviteCode()
+    
+    // 检查首次访问（延迟显示引导）
+    setTimeout(() => {
+      this.checkFirstVisit()
+    }, 1000)
     
     // 追踪页面访问
     this.track('page_view', { page: 'home' })
@@ -218,6 +339,8 @@ const app = {
       document.getElementById('palmPreviewImg').src = this.palmImage
       document.getElementById('palmPreview').style.display = 'block'
       document.getElementById('startPalmBtn').style.display = 'block'
+      // 显示流量提示
+      document.getElementById('palmDataTip').style.display = 'flex'
     }
     reader.readAsDataURL(file)
   },
@@ -271,7 +394,7 @@ const app = {
       // 使用备用模拟数据
       const fallbackResult = PalmAnalysisEngine.analyze(this.palmImage)
       progressEl.textContent = '100%'
-      tipEl.textContent = '💡 使用离线分析模式...'
+      tipEl.textContent = '💡 已切换至离线模式...'
       setTimeout(() => this.showPalmReport({ lines: fallbackResult }), 1000)
     }
   },
@@ -324,6 +447,8 @@ const app = {
       document.getElementById('tonguePreviewImg').src = this.tongueImage
       document.getElementById('tonguePreview').style.display = 'block'
       document.getElementById('startTongueBtn').style.display = 'block'
+      // 显示流量提示
+      document.getElementById('tongueDataTip').style.display = 'flex'
     }
     reader.readAsDataURL(file)
   },
@@ -480,35 +605,16 @@ const app = {
   },
 
   // ============ 八字录入 ============
+  dateType: 'solar', // 'solar' 或 'lunar'
+  unknownTime: false,
+
   initDateInput() {
+    // 移除自动跳转逻辑
     const yearInput = document.getElementById('birthYear')
     const monthInput = document.getElementById('birthMonth')
     const dayInput = document.getElementById('birthDay')
 
     if (!yearInput || !monthInput || !dayInput) return
-
-    // 年份输入4位后自动跳到月份
-    yearInput.addEventListener('input', (e) => {
-      const value = e.target.value
-      if (value.length >= 4) {
-        // 限制范围
-        const year = parseInt(value)
-        if (year >= 1900 && year <= 2030) {
-          monthInput.focus()
-        }
-      }
-    })
-
-    // 月份输入2位后自动跳到日期
-    monthInput.addEventListener('input', (e) => {
-      const value = e.target.value
-      if (value.length >= 2) {
-        const month = parseInt(value)
-        if (month >= 1 && month <= 12) {
-          dayInput.focus()
-        }
-      }
-    })
 
     // 限制输入长度
     yearInput.addEventListener('keydown', (e) => {
@@ -530,6 +636,28 @@ const app = {
     })
   },
 
+  selectDateType(type) {
+    this.dateType = type
+    document.querySelectorAll('.date-type-btn').forEach(btn => {
+      btn.classList.remove('active')
+    })
+    document.getElementById(type === 'solar' ? 'solarBtn' : 'lunarBtn').classList.add('active')
+  },
+
+  toggleUnknownTime() {
+    const checkbox = document.getElementById('unknownTime')
+    this.unknownTime = checkbox.checked
+    const timeInput = document.getElementById('birthTime')
+    if (this.unknownTime) {
+      timeInput.disabled = true
+      timeInput.value = '12:00'
+      timeInput.style.opacity = '0.5'
+    } else {
+      timeInput.disabled = false
+      timeInput.style.opacity = '1'
+    }
+  },
+
   selectGender(gender) {
     this.selectedGender = gender
     document.querySelectorAll('.gender-option').forEach(el => el.classList.remove('active'))
@@ -540,7 +668,7 @@ const app = {
     const year = document.getElementById('birthYear').value
     const month = document.getElementById('birthMonth').value
     const day = document.getElementById('birthDay').value
-    const birthTime = document.getElementById('birthTime').value
+    let birthTime = document.getElementById('birthTime').value
 
     if (!year || !month || !day) {
       alert('请填写完整的出生日期')
@@ -565,13 +693,25 @@ const app = {
       return
     }
 
+    // 如果不清楚时辰，使用默认午时
+    if (this.unknownTime) {
+      birthTime = '12:00'
+    }
+
+    // 如果选择的是农历，可以在这里添加农历转公历的逻辑
+    // 目前先直接使用输入的日期
+    if (this.dateType === 'lunar') {
+      // TODO: 农历转公历
+      console.log('农历日期:', yearNum, monthNum, dayNum)
+    }
+
     const birthDate = `${yearNum}-${String(monthNum).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
     const [hour, minute] = birthTime.split(':').map(Number)
 
     const bazi = BaziUtil.getBazi(yearNum, monthNum, dayNum, hour)
     const wuxingCount = BaziUtil.getWuxingCount(bazi)
 
-    this.baziData = { birthDate, birthTime, gender: this.selectedGender, bazi, wuxingCount }
+    this.baziData = { birthDate, birthTime, gender: this.selectedGender, bazi, wuxingCount, unknownTime: this.unknownTime }
     localStorage.setItem('baziData', JSON.stringify(this.baziData))
     localStorage.removeItem('aiFortune')
     this.aiFortune = null
@@ -697,16 +837,28 @@ const app = {
     const memberTitle = document.getElementById('memberTitle')
     const memberStatus = document.getElementById('memberStatus')
     const memberBtn = document.getElementById('memberBtn')
+    const memberPreview = document.getElementById('memberPreview')
+    const freeCounter = document.getElementById('freeCounter')
     
     if (!memberCard) return
     
+    // 更新免费次数
+    const freeCount = localStorage.getItem('freeAnalysisCount') || '3'
+    if (freeCounter) {
+      freeCounter.textContent = freeCount
+    }
+    
     if (unlocked) {
       memberCard.classList.add('unlocked')
-      memberTitle.textContent = '✅ 已解锁深度报告'
+      memberTitle.textContent = '✨ 专属深度报告'
       memberStatus.textContent = '已解锁'
       memberStatus.classList.remove('locked')
       memberStatus.classList.add('unlocked')
       memberBtn.textContent = '查看深度报告'
+      // 隐藏特权预览
+      if (memberPreview) {
+        memberPreview.style.display = 'none'
+      }
     } else {
       memberCard.classList.remove('unlocked')
       memberTitle.textContent = '✨ 解锁完整报告'
@@ -714,6 +866,10 @@ const app = {
       memberStatus.classList.remove('unlocked')
       memberStatus.classList.add('locked')
       memberBtn.textContent = '立即查看'
+      // 显示特权预览
+      if (memberPreview) {
+        memberPreview.style.display = 'block'
+      }
     }
   },
 
