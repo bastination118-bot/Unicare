@@ -137,9 +137,14 @@ export default async function handler(req, res) {
       };
     }
 
+    // 添加分析来源标识
+    palmData.analysisSource = 'kimi-ai';
+    palmData.analysisTime = new Date().toISOString();
+
     return res.status(200).json({
       success: true,
-      data: palmData
+      data: palmData,
+      source: 'kimi-ai'
     });
 
   } catch (error) {

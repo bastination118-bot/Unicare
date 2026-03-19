@@ -378,14 +378,39 @@ const MockData = {
   },
 
   // ===== 生成舌相分析结果 =====
-  generateTongueResult() {
+  generateTongueResult(imageData) {
+    // 生成确定性种子
+    let seed
+    if (imageData) {
+      // 使用图片base64的长度和部分字符内容作为种子
+      seed = imageData.length
+      const contentStart = imageData.indexOf(',') + 1
+      const content = imageData.substring(contentStart)
+      const samplePositions = [0, Math.floor(content.length / 4), Math.floor(content.length / 2)]
+      for (const pos of samplePositions) {
+        if (content[pos]) {
+          seed += content.charCodeAt(pos)
+        }
+      }
+    } else {
+      seed = Date.now()
+    }
+    
+    // 基于种子的伪随机数生成器
+    const pseudoRandom = (s) => {
+      const x = Math.sin(s) * 10000
+      return x - Math.floor(x)
+    }
+    
     const colors = Object.keys(this.tongueAnalysis.tongueColors)
     const coatings = Object.keys(this.tongueAnalysis.tongueCoatings)
     
-    // 根据日期和随机因子生成确定性结果
-    const seed = new Date().getDate()
-    const colorKey = colors[seed % colors.length]
-    const coatingKey = coatings[(seed + 3) % coatings.length]
+    // 基于种子生成确定性索引
+    const colorIndex = Math.floor(pseudoRandom(seed) * colors.length)
+    const coatingIndex = Math.floor(pseudoRandom(seed + 1) * coatings.length)
+    
+    const colorKey = colors[colorIndex]
+    const coatingKey = coatings[coatingIndex]
     
     const colorData = this.tongueAnalysis.tongueColors[colorKey]
     const coatingData = this.tongueAnalysis.tongueCoatings[coatingKey]
@@ -405,7 +430,9 @@ const MockData = {
       healthIndex: healthIndex,
       constitution: colorData.constitution,
       analysis: this.generateTongueAnalysis(colorData, coatingData, healthIndex),
-      recommendations: colorData.advice
+      recommendations: colorData.advice,
+      analysisSource: 'demo',
+      analysisTime: new Date().toISOString()
     }
   },
 

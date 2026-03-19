@@ -346,6 +346,21 @@ const app = {
   },
 
   async startPalmAnalysis() {
+    // 网络状态检测
+    const networkStatus = await this.checkNetworkStatus()
+    if (networkStatus === 'poor') {
+      const userChoice = confirm('⚠️ 网络连接不稳定，可能影响 AI 分析结果。\n\n请选择：\n• 点击「确定」使用离线演示模式（无需网络）\n• 点击「取消」稍后重试')
+      if (!userChoice) {
+        // 用户选择稍后重试，返回第一步
+        document.getElementById('palm-step1').style.display = 'block'
+        document.getElementById('palm-step2').style.display = 'none'
+        return
+      }
+      // 用户选择离线模式
+      this.runOfflinePalmAnalysis()
+      return
+    }
+
     document.getElementById('palm-step1').style.display = 'none'
     document.getElementById('palm-step2').style.display = 'block'
     this.track('analysis_started', { type: 'palm' })
@@ -385,27 +400,114 @@ const app = {
 
       const data = await response.json()
       progressEl.textContent = '100%'
-      setTimeout(() => this.showPalmReport(data.data), 500)
+      
+      // 标记为AI分析
+      data.data.analysisSource = 'kimi-ai'
+      data.data.analysisTime = new Date().toISOString()
+      
+      setTimeout(() => this.showPalmReport(data.data, false), 500)
 
     } catch (error) {
       console.error('手相分析失败:', error)
       clearInterval(interval)
       
-      // 使用备用模拟数据
-      const fallbackResult = PalmAnalysisEngine.analyze(this.palmImage)
-      progressEl.textContent = '100%'
-      tipEl.textContent = '💡 已切换至离线模式...'
-      setTimeout(() => this.showPalmReport({ lines: fallbackResult }), 1000)
+      // 显示错误提示，让用户选择
+      progressEl.textContent = '分析失败'
+      tipEl.textContent = '❌ 无法连接到 AI 分析服务'
+      
+      setTimeout(() => {
+        const userChoice = confirm('⚠️ AI 分析服务暂时不可用\n\n请选择：\n• 点击「确定」使用离线演示模式\n• 点击「取消」返回重试')
+        if (userChoice) {
+          // 用户选择离线模式
+          this.runOfflinePalmAnalysis()
+        } else {
+          // 用户选择返回
+          document.getElementById('palm-step1').style.display = 'block'
+          document.getElementById('palm-step2').style.display = 'none'
+        }
+      }, 500)
     }
   },
 
-  showPalmReport(result) {
+  // 网络状态检测
+  async checkNetworkStatus() {
+    // 检测navigator.connection
+    if ('connection' in navigator) {
+      const connection = navigator.connection
+      if (connection.effectiveType === '4g' && !connection.saveData) {
+        return 'good'
+      } else if (connection.effectiveType === '2g' || connection.saveData) {
+        return 'poor'
+      }
+    }
+    
+    // 尝试ping一个轻量级资源
+    try {
+      const start = Date.now()
+      const response = await fetch('/favicon.ico', { 
+        method: 'HEAD',
+        cache: 'no-store',
+        signal: AbortSignal.timeout(3000)
+      })
+      const latency = Date.now() - start
+      
+      if (response.ok && latency < 1000) {
+        return 'good'
+      } else if (latency > 3000) {
+        return 'poor'
+      }
+    } catch (e) {
+      return 'poor'
+    }
+    
+    return 'unknown'
+  },
+
+  // 离线手相分析
+  runOfflinePalmAnalysis() {
+    document.getElementById('palm-step1').style.display = 'none'
+    document.getElementById('palm-step2').style.display = 'block'
+
+    const progressEl = document.getElementById('palmProgress')
+    const tipEl = document.getElementById('palmTip')
+    
+    progressEl.textContent = '0%'
+    tipEl.textContent = '💡 正在使用离线演示模式...'
+
+    let progress = 0
+    const interval = setInterval(() => {
+      progress += 15
+      progressEl.textContent = Math.min(progress, 100) + '%'
+      
+      if (progress >= 100) {
+        clearInterval(interval)
+        
+        // 使用基于图片的确定性分析
+        const fallbackResult = PalmAnalysisEngine.analyze(this.palmImage)
+        const result = {
+          lines: fallbackResult,
+          suggestion: '根据您的手相分析，建议保持积极心态，把握机遇，注意健康平衡。',
+          analysisSource: 'demo',
+          analysisTime: new Date().toISOString()
+        }
+        
+        setTimeout(() => this.showPalmReport(result, true), 300)
+      }
+    }, 200)
+  },
+
+  showPalmReport(result, isFallback = false) {
     const date = new Date()
-    document.getElementById('palmReportDate').textContent = 
-      `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+    const dateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+    const timeStr = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+    
+    document.getElementById('palmReportDate').textContent = `${dateStr} ${timeStr}`
 
     // 处理 API 返回格式或备用格式
     const lines = result.lines || result
+    
+    // 分析来源标识
+    const analysisSource = result.analysisSource || (isFallback ? 'demo' : 'unknown')
     
     let html = ''
     for (const key in lines) {
@@ -428,6 +530,21 @@ const app = {
       <div class="suggestion-item">
         <div class="suggestion-text">${suggestion}</div>
       </div>`
+
+    // 添加分析来源标识
+    const sourceBadge = document.getElementById('palmSourceBadge')
+    if (sourceBadge) {
+      if (analysisSource === 'kimi-ai') {
+        sourceBadge.innerHTML = '🤖 由 Kimi AI 分析'
+        sourceBadge.className = 'source-badge ai-source-badge'
+      } else if (analysisSource === 'demo' || isFallback) {
+        sourceBadge.innerHTML = '📱 离线演示模式'
+        sourceBadge.className = 'source-badge demo-source-badge'
+      } else {
+        sourceBadge.innerHTML = '📊 智能分析'
+        sourceBadge.className = 'source-badge'
+      }
+    }
 
     this.showPage('palm-report')
   },
@@ -485,49 +602,75 @@ const app = {
     document.getElementById('tongueReportLoading').style.display = 'block'
     document.getElementById('tongueReportContent').style.display = 'none'
 
+    let result
+    let analysisSource = 'unknown'
+    let isFallback = false
+
     try {
       // 检测是否在本地开发环境
       const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
       
-      let result
       if (isLocalDev) {
         console.log('本地开发模式：使用模拟舌相数据')
         await new Promise(resolve => setTimeout(resolve, 1500))
-        result = MockData.generateTongueResult()
+        result = MockData.generateTongueResult(this.tongueImage)
+        analysisSource = 'demo'
+        isFallback = true
       } else {
-        // 调用 AI API
+        // 调用 AI API - 传递真实图片
         const response = await fetch('/api/tongue', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            tongueFeatures: '用户上传舌相照片',
+            image: this.tongueImage,
             userSymptoms: '暂无'
           })
         })
 
-        if (!response.ok) throw new Error('AI service error')
+        if (!response.ok) {
+          throw new Error('AI service error')
+        }
+        
         const data = await response.json()
         result = data.data
+        analysisSource = data.source || 'kimi-ai'
       }
 
       this.tongueResult = result
-      this.renderTongueReport(result)
+      this.renderTongueReport(result, analysisSource, isFallback)
 
     } catch (error) {
       console.error('舌相分析失败:', error)
       // 使用备用数据
-      const fallbackResult = MockData.generateTongueResult()
-      this.renderTongueReport(fallbackResult)
+      result = MockData.generateTongueResult(this.tongueImage)
+      this.renderTongueReport(result, 'demo', true)
     }
   },
 
-  renderTongueReport(result) {
+  renderTongueReport(result, analysisSource = 'unknown', isFallback = false) {
     document.getElementById('tongueReportLoading').style.display = 'none'
     document.getElementById('tongueReportContent').style.display = 'block'
 
     const date = new Date()
-    document.getElementById('tongueReportDate').textContent = 
-      `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+    const dateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+    const timeStr = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+    
+    document.getElementById('tongueReportDate').textContent = `${dateStr} ${timeStr}`
+
+    // 分析来源标识
+    const sourceBadge = document.getElementById('tongueSourceBadge')
+    if (sourceBadge) {
+      if (analysisSource === 'kimi-ai') {
+        sourceBadge.innerHTML = '🤖 由 Kimi AI 分析'
+        sourceBadge.className = 'source-badge ai-source-badge'
+      } else if (analysisSource === 'demo' || isFallback) {
+        sourceBadge.innerHTML = '📱 离线演示模式'
+        sourceBadge.className = 'source-badge demo-source-badge'
+      } else {
+        sourceBadge.innerHTML = '📊 智能分析'
+        sourceBadge.className = 'source-badge'
+      }
+    }
 
     // 舌相类型
     document.getElementById('tongueType').textContent = result.combinedType || '淡白舌薄白苔'
@@ -899,18 +1042,65 @@ const app = {
 
 // 手相分析规则引擎
 const PalmAnalysisEngine = {
+  // 从base64图片生成确定性种子
+  generateSeed(imageData) {
+    if (!imageData) {
+      return Date.now()
+    }
+    
+    // 使用图片base64的长度和部分字符内容作为种子
+    let seed = imageData.length
+    
+    // 提取图片base64的特定位置字符（跳过data:image前缀）
+    const contentStart = imageData.indexOf(',') + 1
+    const content = imageData.substring(contentStart)
+    
+    // 采样几个位置的字符码
+    const samplePositions = [0, Math.floor(content.length / 4), Math.floor(content.length / 2), Math.floor(content.length * 0.75)]
+    for (const pos of samplePositions) {
+      if (content[pos]) {
+        seed += content.charCodeAt(pos)
+      }
+    }
+    
+    return seed
+  },
+  
+  // 基于种子生成伪随机数
+  pseudoRandom(seed) {
+    const x = Math.sin(seed) * 10000
+    return x - Math.floor(x)
+  },
+  
   analyze(imageData) {
+    const seed = this.generateSeed(imageData)
     const lines = ['life', 'wisdom', 'emotion', 'career', 'wealth']
     const result = {}
-    lines.forEach(lineKey => { result[lineKey] = this.analyzeLine(lineKey) })
+    lines.forEach((lineKey, index) => { 
+      result[lineKey] = this.analyzeLine(lineKey, seed + index) 
+    })
     return result
   },
-  analyzeLine(lineKey) {
+  
+  analyzeLine(lineKey, seed) {
     const lineData = MockData.palmLines[lineKey]
     const meanings = Object.keys(lineData.meanings)
-    const seed = new Date().getDate() + lineKey.charCodeAt(0)
-    return { name: lineData.name, ...lineData.meanings[meanings[seed % meanings.length]] }
+    
+    // 使用种子生成确定性索引
+    const randomValue = this.pseudoRandom(seed)
+    const selectedIndex = Math.floor(randomValue * meanings.length)
+    const selectedKey = meanings[selectedIndex]
+    
+    // 生成基于种子的分数 (60-95)
+    const score = 60 + Math.floor(this.pseudoRandom(seed + 100) * 36)
+    
+    return { 
+      name: lineData.name, 
+      score: score,
+      ...lineData.meanings[selectedKey] 
+    }
   },
+  
   generateSuggestions(lineResults) {
     const suggestions = []
     if (lineResults.life) {

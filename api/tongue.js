@@ -19,16 +19,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { tongueFeatures, userSymptoms } = req.body;
+    const { image, tongueFeatures, userSymptoms } = req.body;
+
+    // 优先使用图片进行分析
+    if (!image && !tongueFeatures) {
+      return res.status(400).json({ error: 'Missing image or tongue features' });
+    }
 
     // 构建提示词
-    const prompt = `你是一位资深的中医舌诊专家。请根据以下舌相特征，为用户提供专业的中医健康分析。
-
-【舌相特征】
-${tongueFeatures || '舌色淡红，舌苔薄白'}
-
-【用户症状】
-${userSymptoms || '无明显不适'}
+    const prompt = `你是一位资深的中医舌诊专家。请分析这张舌相照片，为用户提供专业的中医健康分析。
 
 【分析要求】
 1. 分析舌色（淡白/红/绛/紫/青等）及其健康含义
@@ -36,7 +35,8 @@ ${userSymptoms || '无明显不适'}
 3. 综合判断体质类型（气虚/阳虚/阴虚/湿热/血瘀/痰湿/平和等）
 4. 计算健康指数（0-100分）
 5. 从饮食、作息、穴位按摩三个维度给出调理建议
-6. 评估严重程度（正常/轻度/中度/重度）
+6. 评估严重程度（normal/mild/moderate/severe）
+7. 列出相关症状
 
 【输出格式】
 请严格按照以下 JSON 格式输出，不要包含其他内容：
@@ -66,6 +66,32 @@ ${userSymptoms || '无明显不适'}
   "warning": "如症状持续，建议咨询专业中医师"
 }`;
 
+    // 构建消息内容
+    const messages = [
+      { 
+        role: 'system', 
+        content: '你是一位资深的中医舌诊专家，精通中医舌诊理论。请根据舌相图片提供专业、准确但易懂的健康分析。注意：本分析仅供参考，不能替代专业医疗诊断。' 
+      }
+    ];
+
+    // 如果有图片，使用图片进行视觉分析
+    if (image) {
+      messages.push({
+        role: 'user',
+        content: [
+          { type: 'text', text: prompt },
+          { 
+            type: 'image_url', 
+            image_url: { url: image } 
+          }
+        ]
+      });
+    } else {
+      // 回退到文本描述
+      const textPrompt = `${prompt}\n\n【舌相描述】\n${tongueFeatures || '舌色淡红，舌苔薄白'}\n【用户症状】\n${userSymptoms || '无明显不适'}`;
+      messages.push({ role: 'user', content: textPrompt });
+    }
+
     // 调用 Moonshot API
     const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
       method: 'POST',
@@ -75,13 +101,7 @@ ${userSymptoms || '无明显不适'}
       },
       body: JSON.stringify({
         model: process.env.MOONSHOT_MODEL || 'kimi-k2.5',
-        messages: [
-          { 
-            role: 'system', 
-            content: '你是一位资深的中医舌诊专家，精通中医舌诊理论。请根据舌相特征提供专业、准确但易懂的健康分析。注意：本分析仅供参考，不能替代专业医疗诊断。' 
-          },
-          { role: 'user', content: prompt }
-        ],
+        messages: messages,
         temperature: 0.7,
         max_tokens: 2000
       })
@@ -111,9 +131,14 @@ ${userSymptoms || '无明显不适'}
       analysisData = generateFallbackData(tongueFeatures);
     }
 
+    // 添加分析来源标识
+    analysisData.analysisSource = 'kimi-ai';
+    analysisData.analysisTime = new Date().toISOString();
+
     return res.status(200).json({
       success: true,
-      data: analysisData
+      data: analysisData,
+      source: 'kimi-ai'
     });
 
   } catch (error) {
@@ -150,6 +175,8 @@ function generateFallbackData(features) {
       lifestyle: ['规律作息', '适量运动', '保持心情舒畅'],
       acupoints: ['足三里', '关元']
     },
-    warning: '继续保持良好的生活习惯'
+    warning: '继续保持良好的生活习惯',
+    analysisSource: 'fallback',
+    analysisTime: new Date().toISOString()
   };
 }
