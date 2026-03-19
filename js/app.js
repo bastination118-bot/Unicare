@@ -8,12 +8,22 @@ const app = {
   tongueImage: null,
   tongueResult: null,
 
+  // Analytics 追踪
+  track(eventName, properties = {}) {
+    if (window.va) {
+      window.va('event', eventName, properties)
+    }
+  },
+
   init() {
     this.setTodayDate()
     this.loadDailyFortune()
     this.loadSavedBazi()
     this.bindNavEvents()
     this.initDateInput()
+    
+    // 追踪页面访问
+    this.track('page_view', { page: 'home' })
   },
 
   setTodayDate() {
@@ -134,6 +144,7 @@ const app = {
     document.getElementById('palm-step2').style.display = 'none'
     document.getElementById('palmPreview').style.display = 'none'
     document.getElementById('startPalmBtn').style.display = 'none'
+    this.track('feature_click', { feature: 'palm_analysis' })
   },
 
   goToTongue() {
@@ -142,10 +153,12 @@ const app = {
     document.getElementById('tongue-step2').style.display = 'none'
     document.getElementById('tonguePreview').style.display = 'none'
     document.getElementById('startTongueBtn').style.display = 'none'
+    this.track('feature_click', { feature: 'tongue_analysis' })
   },
 
   goToBazi() {
     this.showPage('bazi')
+    this.track('feature_click', { feature: 'bazi_input' })
   },
 
   goToFortune() {
@@ -156,6 +169,7 @@ const app = {
     this.showPage('fortune')
     this.updateNav('fortune')
     this.updateFortunePage()
+    this.track('feature_click', { feature: 'fortune_report' })
   },
 
   goBack() {
@@ -169,10 +183,12 @@ const app = {
 
   goToInvite() {
     window.location.href = 'pages/invite/index.html'
+    this.track('feature_click', { feature: 'invite' })
   },
 
   goToSurvey() {
     window.location.href = 'pages/survey/index.html'
+    this.track('feature_click', { feature: 'survey' })
   },
 
   showPage(pageId) {
@@ -209,6 +225,7 @@ const app = {
   async startPalmAnalysis() {
     document.getElementById('palm-step1').style.display = 'none'
     document.getElementById('palm-step2').style.display = 'block'
+    this.track('analysis_started', { type: 'palm' })
 
     const tips = ['💡 正在识别生命线...', '💡 正在分析智慧线...', '💡 正在读取感情线...', 
                   '💡 正在评估事业线...', '💡 正在计算财运线...', '💡 AI 正在生成综合建议...']
@@ -314,6 +331,7 @@ const app = {
   startTongueAnalysis() {
     document.getElementById('tongue-step1').style.display = 'none'
     document.getElementById('tongue-step2').style.display = 'block'
+    this.track('analysis_started', { type: 'tongue' })
 
     const tips = ['💡 正在识别舌色...', '💡 正在分析舌苔...', '💡 正在评估舌形...', 
                   '💡 正在判断体质...', '💡 正在计算健康指数...', '💡 AI 正在生成舌诊报告...']
@@ -557,6 +575,7 @@ const app = {
     localStorage.setItem('baziData', JSON.stringify(this.baziData))
     localStorage.removeItem('aiFortune')
     this.aiFortune = null
+    this.track('bazi_submitted', { year: yearNum, gender: this.selectedGender })
     this.goToFortune()
   },
 
