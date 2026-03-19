@@ -13,8 +13,12 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/fortune",
+      "dest": "/api/fortune.js"
+    },
+    {
+      "src": "/api/tongue",
+      "dest": "/api/tongue.js"
     },
     {
       "src": "/(.*)",

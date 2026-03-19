@@ -1,4 +1,77 @@
-// 模拟数据
+// 使用记录器 - v1.1.0 新增后台记录功能
+const UsageLogger = {
+  STORAGE_KEY: 'unicare_usage_logs',
+  userId: null,
+
+  init() {
+    // 生成或获取用户ID
+    this.userId = localStorage.getItem('unicare_user_id') || this.generateUserId()
+    localStorage.setItem('unicare_user_id', this.userId)
+  },
+
+  generateUserId() {
+    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+  },
+
+  getDeviceInfo() {
+    const ua = navigator.userAgent
+    let device = 'desktop'
+    if (/Mobile|Android|iPhone|iPad/i.test(ua)) {
+      device = 'mobile'
+    }
+    return {
+      device: device,
+      userAgent: ua,
+      screenSize: `${window.innerWidth}x${window.innerHeight}`
+    }
+  },
+
+  log(data) {
+    const record = {
+      timestamp: new Date().toISOString(),
+      userId: this.userId,
+      ...this.getDeviceInfo(),
+      ...data
+    }
+
+    // 存入 localStorage
+    const logs = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]')
+    logs.push(record)
+    
+    // 限制存储数量（最近100条）
+    if (logs.length > 100) {
+      logs.shift()
+    }
+    
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(logs))
+
+    // 尝试同步到服务器（如果有）
+    this.syncToServer(record)
+
+    return record
+  },
+
+  syncToServer(record) {
+    // 前端无法直接写入服务器文件，这里预留接口
+    // 实际部署时可以通过 API 发送到后端
+    console.log('[UsageLogger]', record)
+  },
+
+  getLogs() {
+    return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]')
+  },
+
+  exportLogs() {
+    const logs = this.getLogs()
+    return logs.map(log => JSON.stringify(log)).join('\n')
+  },
+
+  clearLogs() {
+    localStorage.removeItem(this.STORAGE_KEY)
+  }
+}
+
+// 模拟数据 - v1.1.0 新增舌相分析
 const MockData = {
   // 今日运势
   dailyFortunes: [
@@ -98,6 +171,170 @@ const MockData = {
     }
   },
 
+  // ===== 舌相分析数据 =====
+  tongueAnalysis: {
+    // 舌色类型
+    tongueColors: {
+      pale: {
+        name: '淡白舌',
+        meaning: '气血不足，阳虚内寒',
+        characteristics: '舌色比正常人浅淡，呈淡白色',
+        healthIndex: 65,
+        constitution: '气虚质/阳虚质',
+        symptoms: ['容易疲劳', '手脚冰凉', '面色苍白', '食欲不振'],
+        advice: {
+          diet: ['红枣', '桂圆', '山药', '牛肉', '生姜'],
+          lifestyle: ['早睡晚起', '避免寒凉', '适量运动', '多晒太阳'],
+          acupoints: ['足三里', '气海', '关元', '脾俞']
+        }
+      },
+      red: {
+        name: '红舌',
+        meaning: '阴虚火旺，内热较重',
+        characteristics: '舌色较正常深，呈鲜红色',
+        healthIndex: 70,
+        constitution: '阴虚质',
+        symptoms: ['口干舌燥', '失眠多梦', '心烦易怒', '手足心热'],
+        advice: {
+          diet: ['银耳', '百合', '梨', '绿豆', '莲藕'],
+          lifestyle: ['早睡早起', '避免熬夜', '放松心情', '适度运动'],
+          acupoints: ['太溪', '三阴交', '涌泉', '照海']
+        }
+      },
+      crimson: {
+        name: '绛舌',
+        meaning: '热入营血，热毒内盛',
+        characteristics: '舌色深红，比红舌更深',
+        healthIndex: 60,
+        constitution: '热盛质',
+        symptoms: ['高热', '口渴', '神昏', '出血倾向'],
+        advice: {
+          diet: ['西瓜', '苦瓜', '黄瓜', '绿豆', '菊花茶'],
+          lifestyle: ['立即就医', '大量饮水', '卧床休息', '避免劳累'],
+          acupoints: ['大椎', '曲池', '合谷', '十宣']
+        }
+      },
+      purple: {
+        name: '紫舌',
+        meaning: '血瘀寒凝，气血不畅',
+        characteristics: '舌色紫暗，或有瘀斑',
+        healthIndex: 55,
+        constitution: '血瘀质',
+        symptoms: ['胸闷刺痛', '痛经', '肤色暗沉', '记忆力减退'],
+        advice: {
+          diet: ['山楂', '玫瑰花', '红糖', '黑木耳', '洋葱'],
+          lifestyle: ['活血化瘀', '适量运动', '保持心情舒畅', '避免久坐'],
+          acupoints: ['血海', '膈俞', '内关', '三阴交']
+        }
+      },
+      blue: {
+        name: '青紫舌',
+        meaning: '严重血瘀或寒极',
+        characteristics: '舌色青紫，晦暗不泽',
+        healthIndex: 50,
+        constitution: '血瘀质/寒凝质',
+        symptoms: ['剧烈疼痛', '四肢冰冷', '唇甲青紫', '呼吸困难'],
+        advice: {
+          diet: ['生姜', '桂皮', '红糖', '羊肉', '韭菜'],
+          lifestyle: ['立即就医', '保暖防寒', '避免劳累', '卧床休息'],
+          acupoints: ['关元', '气海', '神阙', '命门']
+        }
+      }
+    },
+
+    // 舌苔类型
+    tongueCoatings: {
+      whiteThin: {
+        name: '薄白苔',
+        meaning: '正常或表证初期',
+        characteristics: '苔薄而均匀，白色',
+        healthImpact: '正常健康状态或轻微表证',
+        severity: 'normal'
+      },
+      whiteThick: {
+        name: '白厚苔',
+        meaning: '痰湿内停，寒湿困脾',
+        characteristics: '苔白而厚，湿润',
+        healthImpact: '消化不良，脾胃功能弱',
+        severity: 'mild'
+      },
+      yellowThin: {
+        name: '薄黄苔',
+        meaning: '热势较轻',
+        characteristics: '苔薄，微黄',
+        healthImpact: '轻度内热',
+        severity: 'mild'
+      },
+      yellowThick: {
+        name: '黄厚苔',
+        meaning: '湿热内蕴，食积化热',
+        characteristics: '苔黄而厚，干燥或粘腻',
+        healthImpact: '内热较重，消化功能异常',
+        severity: 'moderate'
+      },
+      greasy: {
+        name: '腻苔',
+        meaning: '痰湿内阻，湿浊内蕴',
+        characteristics: '苔质致密，颗粒细腻，如涂油脂',
+        healthImpact: '脾胃湿困，痰湿体质',
+        severity: 'moderate'
+      },
+      peeled: {
+        name: '剥苔',
+        meaning: '胃阴不足，气血亏虚',
+        characteristics: '舌苔部分或全部脱落',
+        healthImpact: '阴虚或气血不足',
+        severity: 'moderate'
+      },
+      grayBlack: {
+        name: '灰黑苔',
+        meaning: '热极或寒极',
+        characteristics: '苔色灰黑，干燥或滑润',
+        healthImpact: '严重病症，需及时就医',
+        severity: 'severe'
+      }
+    },
+
+    // 体质类型
+    constitutions: {
+      qiDeficiency: {
+        name: '气虚质',
+        features: '容易疲劳，气短懒言，声音低弱',
+        suggestion: '补气健脾，避免过劳'
+      },
+      yangDeficiency: {
+        name: '阳虚质',
+        features: '畏寒怕冷，手足不温，喜热饮食',
+        suggestion: '温阳散寒，注意保暖'
+      },
+      yinDeficiency: {
+        name: '阴虚质',
+        features: '手足心热，口干咽燥，喜冷饮',
+        suggestion: '滋阴降火，避免熬夜'
+      },
+      dampHeat: {
+        name: '湿热质',
+        features: '面部油腻，口苦口臭，大便黏滞',
+        suggestion: '清热利湿，清淡饮食'
+      },
+      bloodStasis: {
+        name: '血瘀质',
+        features: '肤色暗沉，易有瘀斑，痛经',
+        suggestion: '活血化瘀，适量运动'
+      },
+      phlegmDamp: {
+        name: '痰湿质',
+        features: '体形肥胖，腹部肥满，口黏痰多',
+        suggestion: '化痰祛湿，控制饮食'
+      },
+      balanced: {
+        name: '平和质',
+        features: '面色红润，精力充沛，睡眠良好',
+        suggestion: '保持现状，均衡养生'
+      }
+    }
+  },
+
   // 获取今日运势
   getDailyFortune() {
     const saved = localStorage.getItem('dailyFortune')
@@ -138,5 +375,55 @@ const MockData = {
     }
     
     return result
+  },
+
+  // ===== 生成舌相分析结果 =====
+  generateTongueResult() {
+    const colors = Object.keys(this.tongueAnalysis.tongueColors)
+    const coatings = Object.keys(this.tongueAnalysis.tongueCoatings)
+    
+    // 根据日期和随机因子生成确定性结果
+    const seed = new Date().getDate()
+    const colorKey = colors[seed % colors.length]
+    const coatingKey = coatings[(seed + 3) % coatings.length]
+    
+    const colorData = this.tongueAnalysis.tongueColors[colorKey]
+    const coatingData = this.tongueAnalysis.tongueCoatings[coatingKey]
+    
+    // 计算综合健康指数
+    let healthIndex = colorData.healthIndex
+    if (coatingData.severity === 'severe') healthIndex -= 15
+    else if (coatingData.severity === 'moderate') healthIndex -= 10
+    else if (coatingData.severity === 'mild') healthIndex -= 5
+    
+    healthIndex = Math.max(30, Math.min(95, healthIndex))
+    
+    return {
+      tongueColor: colorData,
+      tongueCoating: coatingData,
+      combinedType: `${colorData.name}${coatingData.name}`,
+      healthIndex: healthIndex,
+      constitution: colorData.constitution,
+      analysis: this.generateTongueAnalysis(colorData, coatingData, healthIndex),
+      recommendations: colorData.advice
+    }
+  },
+
+  // 生成舌相分析文本
+  generateTongueAnalysis(colorData, coatingData, healthIndex) {
+    const analyses = []
+    
+    analyses.push(`您的舌色为${colorData.name}，${colorData.meaning}。`)
+    analyses.push(`舌苔呈现${coatingData.name}，${coatingData.meaning}。`)
+    
+    if (healthIndex >= 80) {
+      analyses.push('整体健康状况良好，建议继续保持良好的生活习惯。')
+    } else if (healthIndex >= 60) {
+      analyses.push('身体存在轻微的失衡，建议适当调理，注意休息。')
+    } else {
+      analyses.push('身体需要关注和调理，建议咨询专业中医师。')
+    }
+    
+    return analyses.join('\n')
   }
 }

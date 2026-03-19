@@ -900,3 +900,260 @@ body {
     padding: 25px 15px;
   }
 }
+
+/* ============ 舌相分析样式 ============ */
+
+/* 三列功能网格 */
+.feature-grid.three-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.feature-item.highlight {
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 100%);
+  border: 2px solid #FF6B6B;
+}
+
+.feature-item.highlight .feature-name {
+  color: #FF6B6B;
+}
+
+/* 舌相信息卡片 */
+.tongue-info-card {
+  background: linear-gradient(135deg, #E8F4F8 0%, #F0F9FF 100%);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 30px;
+  border: 1px solid #B8E0F0;
+}
+
+.info-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1890FF;
+  margin-bottom: 12px;
+}
+
+.info-content {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.7;
+}
+
+.info-content p {
+  margin-bottom: 8px;
+}
+
+/* 健康指数卡片 */
+.health-index-card {
+  background: linear-gradient(135deg, var(--primary) 0%, #8B7BB5 100%);
+  border-radius: 20px;
+  padding: 25px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.health-index-title {
+  font-size: 16px;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.health-index-value {
+  font-size: 56px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.health-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.health-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #52C41A, #95DE64);
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+
+/* 舌相类型显示 */
+.tongue-type-display {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  padding: 15px 0;
+}
+
+/* 体质显示 */
+.constitution-type {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.constitution-desc {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* 舌相详情 */
+.tongue-detail {
+  padding: 10px 0;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #666;
+  min-width: 60px;
+}
+
+.detail-value {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* 症状标签 */
+.symptoms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.symptom-tag {
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 100%);
+  color: #FF6B6B;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: 1px solid #FFD4D4;
+}
+
+/* AI 分析文本 */
+.analysis-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #555;
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+/* 调理建议卡片 */
+.recommendations-card {
+  background: linear-gradient(135deg, #F6FFED 0%, #fff 100%);
+  border: 2px solid #B7EB8F;
+}
+
+.recommendation-section {
+  margin-bottom: 25px;
+}
+
+.recommendation-section:last-child {
+  margin-bottom: 0;
+}
+
+.recommendation-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #52C41A;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recommendation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.advice-tag {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.advice-tag.diet {
+  background: linear-gradient(135deg, #FFF7E6 0%, #FFE7BA 100%);
+  color: #FA8C16;
+  border: 1px solid #FFD591;
+}
+
+.advice-tag.lifestyle {
+  background: linear-gradient(135deg, #E6F7FF 0%, #BAE7FF 100%);
+  color: #1890FF;
+  border: 1px solid #91D5FF;
+}
+
+.advice-tag.acupoint {
+  background: linear-gradient(135deg, #F6FFED 0%, #B7EB8F 100%);
+  color: #52C41A;
+  border: 1px solid #95DE64;
+}
+
+/* 严重程度提示 */
+.severity-badge {
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.severity-normal {
+  background: linear-gradient(135deg, #F6FFED 0%, #B7EB8F 100%);
+  color: #52C41A;
+  border: 2px solid #95DE64;
+}
+
+.severity-mild {
+  background: linear-gradient(135deg, #FFFBE6 0%, #FFE58F 100%);
+  color: #FAAD14;
+  border: 2px solid #FFD666;
+}
+
+.severity-moderate {
+  background: linear-gradient(135deg, #FFF2E8 0%, #FFBB96 100%);
+  color: #FA541C;
+  border: 2px solid #FF9C6E;
+}
+
+.severity-severe {
+  background: linear-gradient(135deg, #FFF1F0 0%, #FFA39E 100%);
+  color: #F5222D;
+  border: 2px solid #FF7875;
+}
+
+/* 响应式适配 */
+@media (max-width: 400px) {
+  .feature-grid.three-cols {
+    grid-template-columns: 1fr;
+  }
+  
+  .health-index-value {
+    font-size: 48px;
+  }
+  
+  .tongue-type-display {
+    font-size: 20px;
+  }
+}

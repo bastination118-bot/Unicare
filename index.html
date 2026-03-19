@@ -42,11 +42,16 @@
 
         <!-- 功能入口 -->
         <h2 class="section-title">开始探索</h2>
-        <div class="feature-grid">
+        <div class="feature-grid three-cols">
           <div class="feature-item" onclick="app.goToPalm()">
             <div class="feature-icon">✋</div>
             <div class="feature-name">手相分析</div>
             <div class="feature-desc">解读五大线纹</div>
+          </div>
+          <div class="feature-item highlight" onclick="app.goToTongue()">
+            <div class="feature-icon">👅</div>
+            <div class="feature-name">舌相分析</div>
+            <div class="feature-desc">AI中医舌诊 🆕</div>
           </div>
           <div class="feature-item" onclick="app.goToBazi()">
             <div class="feature-icon">☯️</div>
@@ -214,6 +219,176 @@
           </div>
 
           <button class="btn-secondary" onclick="app.goToBazi()" style="margin-top:30px;">重新录入八字</button>
+        </div>
+      </section>
+
+      <!-- 舌相分析页 -->
+      <section id="tongue" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.goBack()">← 返回</button>
+          <h2>舌相分析</h2>
+        </div>
+
+        <div id="tongue-step1" class="tongue-step">
+          <div class="guide-section">
+            <div class="guide-icon">👅</div>
+            <div class="guide-title">请拍摄舌头照片</div>
+            <div class="guide-tips">
+              <div class="tip-item"><span class="tip-num">1</span> 自然伸出舌头，不要用力</div>
+              <div class="tip-item"><span class="tip-num">2</span> 光线充足，避免阴影</div>
+              <div class="tip-item"><span class="tip-num">3</span> 舌面清晰可见，不模糊</div>
+              <div class="tip-item"><span class="tip-num">4</span> 拍摄前不要进食或刷牙</div>
+            </div>
+          </div>
+
+          <div class="photo-preview" id="tonguePreview" style="display:none;">
+            <img id="tonguePreviewImg" src="" alt="舌头预览">
+          </div>
+
+          <div class="btn-group">
+            <input type="file" id="tongueInput" accept="image/*" style="display:none;" onchange="app.handleTonguePhoto(event)">
+            <button class="btn-primary" onclick="document.getElementById('tongueInput').click()">📷 拍照/选图</button>
+            <button id="startTongueBtn" class="btn-primary" style="display:none; margin-top:20px;" onclick="app.startTongueAnalysis()">🔬 开始舌诊</button>
+          </div>
+
+          <div class="tongue-info-card">
+            <div class="info-title">💡 关于中医舌诊</div>
+            <div class="info-content">
+              <p>舌诊是中医诊断的重要方法之一。通过观察舌头的颜色、舌苔的厚薄等特征，可以了解人体的健康状况。</p>
+              <p>本分析仅供参考，不能替代专业医疗诊断。</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="tongue-step2" class="tongue-step" style="display:none;">
+          <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">AI正在分析舌相...</div>
+            <div class="loading-progress" id="tongueProgress">0%</div>
+            <div class="loading-tips">
+              <div class="tip-text" id="tongueTip">💡 正在识别舌色...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 舌相报告页 -->
+      <section id="tongue-report" class="page">
+        <div class="page-header">
+          <button class="back-btn" onclick="app.goHome()">← 返回首页</button>
+          <h2>舌诊报告</h2>
+        </div>
+
+        <!-- 加载状态 -->
+        <div id="tongueReportLoading" style="display:none;">
+          <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">🤖 Kimi AI 正在生成专业舌诊报告...</div>
+          </div>
+        </div>
+
+        <!-- 报告内容 -->
+        <div id="tongueReportContent" style="display:none;">
+          <div class="report-header">
+            <div class="report-title">👅 中医舌诊报告</div>
+            <div class="report-date" id="tongueReportDate">--</div>
+          </div>
+
+          <!-- 严重程度提示 -->
+          <div id="severityAlert"></div>
+
+          <!-- 健康指数 -->
+          <div class="health-index-card">
+            <div class="health-index-title">📊 健康指数</div>
+            <div class="health-index-value" id="healthIndex">--</div>
+            <div class="health-progress-bar">
+              <div class="health-progress-fill" id="healthProgress"></div>
+            </div>
+          </div>
+
+          <!-- 舌相类型 -->
+          <div class="card">
+            <div class="card-title">🔍 舌相类型</div>
+            <div class="tongue-type-display" id="tongueType">--</div>
+          </div>
+
+          <!-- 体质判断 -->
+          <div class="card">
+            <div class="card-title">🧬 体质判断</div>
+            <div class="constitution-type" id="constitutionType">--</div>
+            <div class="constitution-desc" id="constitutionDesc">--</div>
+          </div>
+
+          <!-- 舌色分析 -->
+          <div class="card">
+            <div class="card-title">🎨 舌色分析</div>
+            <div class="tongue-detail">
+              <div class="detail-row">
+                <span class="detail-label">舌色：</span>
+                <span class="detail-value" id="tongueColorName">--</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">含义：</span>
+                <span class="detail-value" id="tongueColorMeaning">--</span>
+              </div>
+              <div class="detail-text" id="tongueColorDesc">--</div>
+            </div>
+          </div>
+
+          <!-- 舌苔分析 -->
+          <div class="card">
+            <div class="card-title">🌫️ 舌苔分析</div>
+            <div class="tongue-detail">
+              <div class="detail-row">
+                <span class="detail-label">舌苔：</span>
+                <span class="detail-value" id="tongueCoatingName">--</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">含义：</span>
+                <span class="detail-value" id="tongueCoatingMeaning">--</span>
+              </div>
+              <div class="detail-text" id="tongueCoatingDesc">--</div>
+            </div>
+          </div>
+
+          <!-- 症状分析 -->
+          <div class="card">
+            <div class="card-title">🩺 相关症状</div>
+            <div class="symptoms-list" id="symptomsList"></div>
+          </div>
+
+          <!-- 详细分析 -->
+          <div class="card">
+            <div class="card-title">🔮 AI 诊断分析</div>
+            <div class="analysis-text" id="tongueAnalysis">--</div>
+          </div>
+
+          <!-- 调理建议 -->
+          <div class="card recommendations-card">
+            <div class="card-title">💊 调理建议</div>
+            
+            <div class="recommendation-section">
+              <div class="recommendation-title">🥗 饮食调理</div>
+              <div class="recommendation-tags" id="dietAdvice"></div>
+            </div>
+
+            <div class="recommendation-section">
+              <div class="recommendation-title">😴 作息调理</div>
+              <div class="recommendation-tags" id="lifestyleAdvice"></div>
+            </div>
+
+            <div class="recommendation-section">
+              <div class="recommendation-title">💆 穴位按摩</div>
+              <div class="recommendation-tags" id="acupointAdvice"></div>
+            </div>
+          </div>
+
+          <div class="action-btns">
+            <button class="btn-primary" onclick="app.saveTongueReport()">💾 保存报告</button>
+            <button class="btn-secondary" onclick="app.goHome()">🏠 返回首页</button>
+          </div>
+
+          <div class="disclaimer">⚠️ 免责声明：本报告仅供健康参考，不能替代专业医疗诊断。如有不适，请及时就医。</div>
         </div>
       </section>
     </main>
