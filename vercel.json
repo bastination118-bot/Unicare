@@ -1,32 +1,10 @@
 {
   "version": 2,
   "name": "unicare-web",
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/fortune",
-      "dest": "/api/fortune.js"
-    },
-    {
-      "src": "/api/tongue",
-      "dest": "/api/tongue.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
+  "buildCommand": null,
+  "outputDirectory": ".",
   "env": {
-    "MOONSHOT_API_KEY": "@moonshot-api-key",
+    "MOONSHOT_API_KEY": "sk-ebZIGrp3OhsSsMW0eqhwNqhsAg0UmGqvCHDTFkpgZvUBx0Mj",
     "MOONSHOT_MODEL": "kimi-k2.5"
   }
 }
