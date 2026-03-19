@@ -222,13 +222,51 @@ body {
   padding: 25px;
   border: 2px solid #FFE4A1;
   cursor: pointer;
+  transition: all 0.3s;
+}
+
+.member-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 168, 83, 0.2);
+}
+
+.member-card.unlocked {
+  background: linear-gradient(135deg, #F6FFED 0%, #fff 100%);
+  border-color: #B7EB8F;
+}
+
+.member-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .member-title {
   font-size: 18px;
   font-weight: 700;
   color: #D4A853;
-  margin-bottom: 15px;
+}
+
+.member-card.unlocked .member-title {
+  color: #52C41A;
+}
+
+.member-status {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.member-status.locked {
+  background: #FFF1F0;
+  color: #FF4D4F;
+}
+
+.member-status.unlocked {
+  background: #F6FFED;
+  color: #52C41A;
 }
 
 .member-benefits {
@@ -246,6 +284,11 @@ body {
   border-radius: 20px;
 }
 
+.member-card.unlocked .benefit-tag {
+  background: rgba(82, 196, 26, 0.15);
+  color: #52C41A;
+}
+
 .member-btn {
   background: linear-gradient(135deg, #D4A853 0%, #E8C878 100%);
   color: white;
@@ -254,6 +297,10 @@ body {
   border-radius: 25px;
   font-size: 16px;
   font-weight: 600;
+}
+
+.member-card.unlocked .member-btn {
+  background: linear-gradient(135deg, #52C41A 0%, #73D13D 100%);
 }
 
 /* 免责声明 */

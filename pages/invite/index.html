@@ -74,6 +74,116 @@
       color: #888;
     }
     
+    .input-code-section {
+      background: linear-gradient(135deg, #E6F7FF 0%, #fff 100%);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 2px solid #91D5FF;
+    }
+
+    .input-code-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .input-code-icon {
+      font-size: 24px;
+    }
+
+    .input-code-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1890FF;
+    }
+
+    .input-code-desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .input-code-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    .code-input {
+      flex: 1;
+      padding: 14px 16px;
+      border: 2px solid #d9d9d9;
+      border-radius: 12px;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      transition: border-color 0.3s;
+    }
+
+    .code-input:focus {
+      outline: none;
+      border-color: #1890FF;
+    }
+
+    .btn-verify {
+      background: linear-gradient(135deg, #1890FF 0%, #40A9FF 100%);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .btn-verify:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(24, 144, 255, 0.4);
+    }
+
+    .btn-verify:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .unlock-benefits {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed #91D5FF;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .unlock-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #52C41A;
+      margin-bottom: 12px;
+    }
+
+    .unlock-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .unlock-item {
+      font-size: 14px;
+      color: #333;
+      padding: 8px 12px;
+      background: rgba(82, 196, 26, 0.1);
+      border-radius: 8px;
+    }
+
     /* 邀请码区域 */
     .code-section {
       background: linear-gradient(135deg, #FFF9E6 0%, #FFF5D6 100%);
@@ -410,6 +520,28 @@
         </div>
       </div>
       
+      <!-- 输入邀请码 -->
+      <div class="input-code-section">
+        <div class="input-code-header">
+          <span class="input-code-icon">🎫</span>
+          <span class="input-code-title">有邀请码？</span>
+        </div>
+        <div class="input-code-desc">输入好友邀请码，解锁深度分析报告</div>
+        <div class="input-code-box">
+          <input type="text" id="inputCode" class="code-input" placeholder="请输入6位邀请码" maxlength="6">
+          <button class="btn-verify" onclick="invite.verifyCode()">验证</button>
+        </div>
+        <div class="unlock-benefits" id="unlockBenefits" style="display:none;">
+          <div class="unlock-title">✅ 已解锁特权</div>
+          <div class="unlock-list">
+            <div class="unlock-item">📊 深度八字分析报告</div>
+            <div class="unlock-item">🔮 年度运势预测</div>
+            <div class="unlock-item">💡 专家级健康建议</div>
+            <div class="unlock-item">🎁 +3次免费分析次数</div>
+          </div>
+        </div>
+      </div>
+      
       <!-- 邀请码 -->
       <div class="code-section">
         <div class="code-label">我的专属邀请码</div>
@@ -518,6 +650,7 @@
       init() {
         this.loadData();
         this.generateCode();
+        this.checkUnlockStatus();
         this.updateUI();
       },
       
@@ -665,7 +798,66 @@
         window.location.href = '../../index.html';
       },
       
-      // 模拟被邀请（用于测试）
+      // 检查是否已解锁
+      checkUnlockStatus() {
+        const unlocked = localStorage.getItem('deepReportUnlocked');
+        const usedCode = localStorage.getItem('usedInviteCode');
+        
+        if (unlocked === 'true' && usedCode) {
+          document.getElementById('unlockBenefits').style.display = 'block';
+          document.getElementById('inputCode').value = usedCode;
+          document.getElementById('inputCode').disabled = true;
+          document.querySelector('.btn-verify').textContent = '已解锁';
+          document.querySelector('.btn-verify').disabled = true;
+        }
+      },
+
+      verifyCode() {
+        const inputCode = document.getElementById('inputCode').value.trim().toUpperCase();
+        
+        if (inputCode.length !== 6) {
+          this.showToast('请输入6位邀请码');
+          return;
+        }
+
+        // 不能输入自己的邀请码
+        if (inputCode === this.data.code) {
+          this.showToast('不能使用自己的邀请码');
+          return;
+        }
+
+        // 检查是否已经使用过
+        const usedCode = localStorage.getItem('usedInviteCode');
+        if (usedCode) {
+          this.showToast('您已经使用过邀请码了');
+          return;
+        }
+
+        // 模拟验证（实际应该调用后端API验证）
+        // 这里接受任何6位字母数字组合作为有效邀请码
+        const isValid = /^[A-Z0-9]{6}$/.test(inputCode);
+        
+        if (isValid) {
+          // 解锁深度报告
+          localStorage.setItem('deepReportUnlocked', 'true');
+          localStorage.setItem('usedInviteCode', inputCode);
+          
+          // 增加免费次数
+          this.data.freeAnalysis += 3;
+          this.saveData();
+          
+          // 显示解锁内容
+          document.getElementById('unlockBenefits').style.display = 'block';
+          document.getElementById('inputCode').disabled = true;
+          document.querySelector('.btn-verify').textContent = '已解锁';
+          document.querySelector('.btn-verify').disabled = true;
+          
+          this.showToast('🎉 邀请码验证成功！');
+          this.updateUI();
+        } else {
+          this.showToast('邀请码无效，请检查输入');
+        }
+      },
       simulateInvite(name) {
         this.data.invites.push({
           name: name || `好友${this.data.invites.length + 1}`,

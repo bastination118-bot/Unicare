@@ -30,6 +30,9 @@ const app = {
     
     // 加载个性化内容
     this.loadPersonalizedContent()
+    
+    // 检查解锁状态
+    this.checkUnlockStatus()
   },
 
   loadPersonalizedContent() {
@@ -669,8 +672,53 @@ const app = {
     }
   },
 
+  checkUnlockStatus() {
+    const unlocked = localStorage.getItem('deepReportUnlocked') === 'true'
+    const memberCard = document.getElementById('memberCard')
+    const memberTitle = document.getElementById('memberTitle')
+    const memberStatus = document.getElementById('memberStatus')
+    const memberBtn = document.getElementById('memberBtn')
+    
+    if (!memberCard) return
+    
+    if (unlocked) {
+      memberCard.classList.add('unlocked')
+      memberTitle.textContent = '✅ 已解锁深度报告'
+      memberStatus.textContent = '已解锁'
+      memberStatus.classList.remove('locked')
+      memberStatus.classList.add('unlocked')
+      memberBtn.textContent = '查看深度报告'
+    } else {
+      memberCard.classList.remove('unlocked')
+      memberTitle.textContent = '✨ 解锁完整报告'
+      memberStatus.textContent = '未解锁'
+      memberStatus.classList.remove('unlocked')
+      memberStatus.classList.add('locked')
+      memberBtn.textContent = '立即查看'
+    }
+  },
+
+  handleMemberClick() {
+    const unlocked = localStorage.getItem('deepReportUnlocked') === 'true'
+    
+    if (unlocked) {
+      this.showDeepReport()
+    } else {
+      this.goToInvite()
+    }
+  },
+
+  showDeepReport() {
+    if (!this.baziData) {
+      alert('请先录入八字信息')
+      this.goToBazi()
+      return
+    }
+    alert('深度报告功能开发中...\n\n已解锁内容：\n• 详细八字分析\n• 年度运势预测\n• 专家级健康建议')
+  },
+
   showMemberTip() {
-    alert('会员功能开发中，敬请期待！')
+    this.handleMemberClick()
   }
 }
 

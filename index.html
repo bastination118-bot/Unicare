@@ -109,15 +109,18 @@
           </div>
         </div>
 
-        <!-- 会员推广 -->
-        <div class="member-card" onclick="app.showMemberTip()">
-          <div class="member-title">✨ 解锁完整报告</div>
-          <div class="member-benefits">
+        <!-- 会员推广 / 解锁状态 -->
+        <div class="member-card" id="memberCard" onclick="app.handleMemberClick()">
+          <div class="member-header">
+            <div class="member-title" id="memberTitle">✨ 解锁完整报告</div>
+            <div class="member-status locked" id="memberStatus">未解锁</div>
+          </div>
+          <div class="member-benefits" id="memberBenefits">
             <span class="benefit-tag">深度分析</span>
             <span class="benefit-tag">专家解读</span>
             <span class="benefit-tag">年度运势</span>
           </div>
-          <div class="member-btn">立即查看</div>
+          <div class="member-btn" id="memberBtn">立即查看</div>
         </div>
 
         <div class="disclaimer">本程序仅供娱乐参考，不构成专业建议</div>
