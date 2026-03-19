@@ -202,7 +202,7 @@ const app = {
     reader.readAsDataURL(file)
   },
 
-  startPalmAnalysis() {
+  async startPalmAnalysis() {
     document.getElementById('palm-step1').style.display = 'none'
     document.getElementById('palm-step2').style.display = 'block'
 
@@ -213,46 +213,77 @@ const app = {
     const progressEl = document.getElementById('palmProgress')
     const tipEl = document.getElementById('palmTip')
 
+    // 进度动画
     const interval = setInterval(() => {
-      progress += Math.random() * 15 + 5
-      if (progress > 100) progress = 100
+      progress += Math.random() * 10 + 3
+      if (progress > 90) progress = 90
       progressEl.textContent = Math.floor(progress) + '%'
-      const tipIndex = Math.floor(progress / 20)
+      const tipIndex = Math.floor(progress / 18)
       if (tipIndex < tips.length) tipEl.textContent = tips[tipIndex]
+    }, 500)
 
-      if (progress >= 100) {
-        clearInterval(interval)
-        setTimeout(() => this.showPalmReport(), 500)
+    try {
+      // 调用 AI API
+      const response = await fetch('/api/palm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image: this.palmImage,
+          gender: this.selectedGender
+        })
+      })
+
+      clearInterval(interval)
+
+      if (!response.ok) {
+        throw new Error('AI service error')
       }
-    }, 300)
+
+      const data = await response.json()
+      progressEl.textContent = '100%'
+      setTimeout(() => this.showPalmReport(data.data), 500)
+
+    } catch (error) {
+      console.error('手相分析失败:', error)
+      clearInterval(interval)
+      
+      // 使用备用模拟数据
+      const fallbackResult = PalmAnalysisEngine.analyze(this.palmImage)
+      progressEl.textContent = '100%'
+      tipEl.textContent = '💡 使用离线分析模式...'
+      setTimeout(() => this.showPalmReport({ lines: fallbackResult }), 1000)
+    }
   },
 
-  showPalmReport() {
-    const result = PalmAnalysisEngine.analyze(this.palmImage)
+  showPalmReport(result) {
     const date = new Date()
     document.getElementById('palmReportDate').textContent = 
       `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
 
+    // 处理 API 返回格式或备用格式
+    const lines = result.lines || result
+    
     let html = ''
-    for (const key in result) {
-      const line = result[key]
+    for (const key in lines) {
+      const line = lines[key]
       html += `
         <div class="line-card">
           <div class="line-header">
             <span class="line-name">${line.name}</span>
-            <span class="line-badge">${line.desc}</span>
+            <span class="line-score">${line.score || 75}分</span>
           </div>
-          <div class="line-meaning">${line.meaning}</div>
+          <div class="line-status" style="color: #888; font-size: 13px; margin-bottom: 8px;">${line.status || line.desc || ''}</div>
+          <div class="line-meaning">${line.analysis || line.meaning}</div>
         </div>`
     }
     document.getElementById('palmLinesContainer').innerHTML = html
 
-    const suggestions = PalmAnalysisEngine.generateSuggestions(result)
-    document.getElementById('palmSuggestion').innerHTML = suggestions.map(s => `
+    // 显示综合建议
+    const suggestion = result.suggestion || '根据您的手相分析，建议保持积极心态，把握机遇，注意健康平衡。'
+    document.getElementById('palmSuggestion').innerHTML = `
       <div class="suggestion-item">
-        <span class="suggestion-label">${s.label}</span>
-        <div class="suggestion-text">${s.text}</div>
-      </div>`).join('')
+        <div class="suggestion-text">${suggestion}</div>
+      </div>`
 
     this.showPage('palm-report')
   },
