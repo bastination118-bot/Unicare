@@ -1283,4 +1283,59 @@ body {
   .tongue-type-display {
     font-size: 20px;
   }
+  
+  .date-input-group {
+    padding: 10px 12px;
+  }
+  
+  .date-input.year {
+    width: 50px;
+  }
+  
+  .date-input.month,
+  .date-input.day {
+    width: 35px;
+  }
+}
+
+/* 日期输入组 */
+.date-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.date-input-group:focus-within {
+  border-color: var(--primary);
+}
+
+.date-input {
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 16px;
+  color: var(--text);
+  outline: none;
+}
+
+.date-input.year {
+  width: 60px;
+}
+
+.date-input.month,
+.date-input.day {
+  width: 40px;
+}
+
+.date-input::placeholder {
+  color: #ccc;
+}
+
+.date-separator {
+  color: #ccc;
+  font-size: 16px;
 }

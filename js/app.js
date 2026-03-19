@@ -13,6 +13,7 @@ const app = {
     this.loadDailyFortune()
     this.loadSavedBazi()
     this.bindNavEvents()
+    this.initDateInput()
   },
 
   setTodayDate() {
@@ -458,6 +459,56 @@ const app = {
   },
 
   // ============ 八字录入 ============
+  initDateInput() {
+    const yearInput = document.getElementById('birthYear')
+    const monthInput = document.getElementById('birthMonth')
+    const dayInput = document.getElementById('birthDay')
+
+    if (!yearInput || !monthInput || !dayInput) return
+
+    // 年份输入4位后自动跳到月份
+    yearInput.addEventListener('input', (e) => {
+      const value = e.target.value
+      if (value.length >= 4) {
+        // 限制范围
+        const year = parseInt(value)
+        if (year >= 1900 && year <= 2030) {
+          monthInput.focus()
+        }
+      }
+    })
+
+    // 月份输入2位后自动跳到日期
+    monthInput.addEventListener('input', (e) => {
+      const value = e.target.value
+      if (value.length >= 2) {
+        const month = parseInt(value)
+        if (month >= 1 && month <= 12) {
+          dayInput.focus()
+        }
+      }
+    })
+
+    // 限制输入长度
+    yearInput.addEventListener('keydown', (e) => {
+      if (yearInput.value.length >= 4 && e.key >= '0' && e.key <= '9' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault()
+      }
+    })
+
+    monthInput.addEventListener('keydown', (e) => {
+      if (monthInput.value.length >= 2 && e.key >= '0' && e.key <= '9' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault()
+      }
+    })
+
+    dayInput.addEventListener('keydown', (e) => {
+      if (dayInput.value.length >= 2 && e.key >= '0' && e.key <= '9' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault()
+      }
+    })
+  },
+
   selectGender(gender) {
     this.selectedGender = gender
     document.querySelectorAll('.gender-option').forEach(el => el.classList.remove('active'))
@@ -465,18 +516,38 @@ const app = {
   },
 
   async submitBazi() {
-    const birthDate = document.getElementById('birthDate').value
+    const year = document.getElementById('birthYear').value
+    const month = document.getElementById('birthMonth').value
+    const day = document.getElementById('birthDay').value
     const birthTime = document.getElementById('birthTime').value
 
-    if (!birthDate) {
-      alert('请选择出生日期')
+    if (!year || !month || !day) {
+      alert('请填写完整的出生日期')
       return
     }
 
-    const [year, month, day] = birthDate.split('-').map(Number)
+    const yearNum = parseInt(year)
+    const monthNum = parseInt(month)
+    const dayNum = parseInt(day)
+
+    // 验证日期有效性
+    if (yearNum < 1900 || yearNum > 2030) {
+      alert('请输入有效的年份（1900-2030）')
+      return
+    }
+    if (monthNum < 1 || monthNum > 12) {
+      alert('请输入有效的月份（1-12）')
+      return
+    }
+    if (dayNum < 1 || dayNum > 31) {
+      alert('请输入有效的日期（1-31）')
+      return
+    }
+
+    const birthDate = `${yearNum}-${String(monthNum).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
     const [hour, minute] = birthTime.split(':').map(Number)
 
-    const bazi = BaziUtil.getBazi(year, month, day, hour)
+    const bazi = BaziUtil.getBazi(yearNum, monthNum, dayNum, hour)
     const wuxingCount = BaziUtil.getWuxingCount(bazi)
 
     this.baziData = { birthDate, birthTime, gender: this.selectedGender, bazi, wuxingCount }
