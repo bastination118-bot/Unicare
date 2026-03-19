@@ -1143,9 +1143,136 @@ body {
   border: 2px solid #FF7875;
 }
 
+/* ============ v1.1 新功能样式 ============ */
+
+/* 个性化推荐卡片 */
+.personalized-card {
+  background: linear-gradient(135deg, #FFF9E6 0%, #FFF5D6 100%);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px;
+  border: 2px solid #FFE4A1;
+}
+
+.personal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.personal-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #B8893C;
+}
+
+.personal-date {
+  font-size: 14px;
+  color: #D4A853;
+}
+
+.personal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.personal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 12px;
+}
+
+.personal-icon {
+  font-size: 24px;
+}
+
+.personal-text {
+  font-size: 15px;
+  color: #333;
+}
+
+/* 新功能标签 */
+.new-feature {
+  position: relative;
+}
+
+.new-feature::after {
+  content: 'NEW';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+/* 两列布局 */
+.feature-grid.two-cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 调查问卷横幅 */
+.survey-banner {
+  background: linear-gradient(135deg, #E6F7FF 0%, #BAE7FF 100%);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid #91D5FF;
+}
+
+.survey-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(24, 144, 255, 0.2);
+}
+
+.survey-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.survey-icon {
+  font-size: 32px;
+}
+
+.survey-text {
+  flex: 1;
+}
+
+.survey-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1890FF;
+  margin-bottom: 4px;
+}
+
+.survey-desc {
+  font-size: 13px;
+  color: #666;
+}
+
+.survey-arrow {
+  font-size: 24px;
+  color: #1890FF;
+}
+
 /* 响应式适配 */
 @media (max-width: 400px) {
   .feature-grid.three-cols {
+    grid-template-columns: 1fr;
+  }
+  
+  .feature-grid.two-cols {
     grid-template-columns: 1fr;
   }
   

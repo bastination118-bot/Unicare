@@ -26,6 +26,71 @@ const app = {
     document.getElementById('luckyColor').textContent = `幸运色：${fortune.luckyColor}`
     document.getElementById('luckyStar').textContent = fortune.star
     document.getElementById('dailyFortune').textContent = fortune.brief
+    
+    // 加载个性化内容
+    this.loadPersonalizedContent()
+  },
+
+  loadPersonalizedContent() {
+    // 从 localStorage 获取用户数据
+    const surveyData = localStorage.getItem('surveyData')
+    const baziData = localStorage.getItem('baziData')
+    
+    if (surveyData || baziData) {
+      // 显示个性化卡片
+      document.getElementById('personalizedCard').style.display = 'block'
+      
+      // 设置日期
+      const date = new Date()
+      document.getElementById('personalDate').textContent = `${date.getMonth() + 1}月${date.getDate()}日`
+      
+      // 根据八字或问卷生成个性化内容
+      if (baziData) {
+        const bazi = JSON.parse(baziData)
+        // 根据八字五行推荐幸运色
+        const luckyColors = {
+          '金': '白色、金色',
+          '木': '绿色、青色', 
+          '水': '黑色、蓝色',
+          '火': '红色、紫色',
+          '土': '黄色、棕色'
+        }
+        
+        // 简单示例：根据日柱天干推荐
+        const dayGan = bazi.day ? bazi.day.charAt(0) : ''
+        const ganToElement = {
+          '甲': '木', '乙': '木',
+          '丙': '火', '丁': '火',
+          '戊': '土', '己': '土',
+          '庚': '金', '辛': '金',
+          '壬': '水', '癸': '水'
+        }
+        const element = ganToElement[dayGan] || '火'
+        document.getElementById('luckyColorPersonal').textContent = `幸运色：${luckyColors[element]}`
+        
+        // 根据日柱推荐幸运数字
+        const luckyNums = {
+          '金': '4、9', '木': '3、8',
+          '水': '1、6', '火': '2、7',
+          '土': '5、0'
+        }
+        document.getElementById('luckyNumber').textContent = `幸运数字：${luckyNums[element]}`
+      }
+      
+      // 生成今日宜忌（基于星期）
+      const dayOfWeek = new Date().getDay()
+      const yiJiList = [
+        { yi: '签约、出行', ji: '动土、争吵' },
+        { yi: '学习、交流', ji: '冲动消费' },
+        { yi: '合作、谈判', ji: '独断专行' },
+        { yi: '创新、突破', ji: '墨守成规' },
+        { yi: '理财、规划', ji: '借贷、担保' },
+        { yi: '社交、聚会', ji: '宅家、懒惰' },
+        { yi: '休息、冥想', ji: '过度工作' }
+      ]
+      const todayYiJi = yiJiList[dayOfWeek]
+      document.getElementById('todayYiJi').textContent = `宜：${todayYiJi.yi} | 忌：${todayYiJi.ji}`
+    }
   },
 
   loadSavedBazi() {
@@ -91,6 +156,19 @@ const app = {
 
   goBack() {
     this.goHome()
+  },
+
+  // v1.1 新功能导航
+  goToSolarTerm() {
+    window.location.href = 'pages/solar-term/index.html'
+  },
+
+  goToInvite() {
+    window.location.href = 'pages/invite/index.html'
+  },
+
+  goToSurvey() {
+    window.location.href = 'pages/survey/index.html'
   },
 
   showPage(pageId) {
