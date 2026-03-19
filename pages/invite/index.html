@@ -596,6 +596,77 @@
       opacity: 1;
       visibility: visible;
     }
+
+    /* ========== 响应式适配 - v1.2.3 修复邀请码溢出 ========== */
+    
+    /* 小屏手机：iPhone SE/mini */
+    @media (max-width: 375px) {
+      .code-display {
+        font-size: 28px;
+        letter-spacing: 4px;
+      }
+      
+      .poster-code {
+        font-size: 32px;
+        letter-spacing: 4px;
+        padding: 12px;
+      }
+      
+      .poster-app-name {
+        font-size: 22px;
+      }
+      
+      .poster-logo {
+        font-size: 32px;
+      }
+      
+      .invite-header h1 {
+        font-size: 22px;
+      }
+      
+      .invite-header p {
+        font-size: 13px;
+      }
+      
+      .stats-grid {
+        gap: 10px;
+      }
+      
+      .stat-value {
+        font-size: 26px;
+      }
+      
+      .stat-label {
+        font-size: 12px;
+      }
+    }
+    
+    /* 中屏手机：标准手机 */
+    @media (min-width: 376px) and (max-width: 414px) {
+      .code-display {
+        font-size: 32px;
+        letter-spacing: 6px;
+      }
+      
+      .poster-code {
+        font-size: 36px;
+        letter-spacing: 6px;
+        padding: 14px;
+      }
+    }
+    
+    /* 大屏手机：Plus/Max */
+    @media (min-width: 415px) {
+      .code-display {
+        font-size: 36px;
+        letter-spacing: 8px;
+      }
+      
+      .poster-code {
+        font-size: 42px;
+        letter-spacing: 8px;
+      }
+    }
   </style>
 </head>
 <body>
