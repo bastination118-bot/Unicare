@@ -933,21 +933,6 @@ body {
   line-height: 1.6;
 }
 
-/* 响应式 */
-@media (max-width: 400px) {
-  .main-content {
-    padding: 15px;
-  }
-  
-  .brand-name {
-    font-size: 36px;
-  }
-  
-  .feature-item {
-    padding: 25px 15px;
-  }
-}
-
 /* ============ 舌相分析样式 ============ */
 
 /* 三列功能网格 */
@@ -1312,38 +1297,6 @@ body {
 .survey-arrow {
   font-size: 24px;
   color: #1890FF;
-}
-
-/* 响应式适配 */
-@media (max-width: 400px) {
-  .feature-grid.three-cols {
-    grid-template-columns: 1fr;
-  }
-  
-  .feature-grid.two-cols {
-    grid-template-columns: 1fr;
-  }
-  
-  .health-index-value {
-    font-size: 48px;
-  }
-  
-  .tongue-type-display {
-    font-size: 20px;
-  }
-  
-  .date-input-group {
-    padding: 10px 12px;
-  }
-  
-  .date-input.year {
-    width: 50px;
-  }
-  
-  .date-input.month,
-  .date-input.day {
-    width: 35px;
-  }
 }
 
 /* 日期输入组 */
@@ -1781,5 +1734,260 @@ body {
 
 .date-separator {
   color: #ccc;
-  font-size: 16px;
+  font-size: clamp(14px, 3.5vw, 16px);
+}
+
+/* ============ 响应式断点系统 ============ */
+
+/* 小屏手机：iPhone SE, mini (<= 375px) */
+@media (max-width: 375px) {
+  /* 品牌区 */
+  .brand-section {
+    padding: 30px 0;
+  }
+  
+  .brand-logo {
+    font-size: 60px;
+    margin-bottom: 10px;
+  }
+  
+  .brand-name {
+    font-size: 28px;
+  }
+  
+  /* 主内容区 */
+  .main-content {
+    padding: 12px;
+  }
+  
+  /* 功能项 */
+  .feature-item {
+    padding: 20px 10px;
+  }
+  
+  .feature-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+  
+  /* 三列网格改为两列 */
+  .feature-grid.three-cols {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .feature-grid.three-cols .feature-item:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+  
+  /* 两列网格改为单列 */
+  .feature-grid.two-cols {
+    grid-template-columns: 1fr;
+  }
+  
+  /* 日期输入 */
+  .date-input-group {
+    padding: 10px;
+    gap: 4px;
+  }
+  
+  .date-input.year {
+    width: 45px;
+    font-size: 14px;
+  }
+  
+  .date-input.month,
+  .date-input.day {
+    width: 30px;
+    font-size: 14px;
+  }
+  
+  .date-separator {
+    font-size: 14px;
+  }
+  
+  /* 导航栏 */
+  .navbar {
+    padding: 10px 12px;
+  }
+  
+  .nav-brand {
+    font-size: 18px;
+  }
+  
+  .nav-tab {
+    font-size: 13px;
+    padding: 4px 8px;
+  }
+  
+  /* 运势卡片 */
+  .fortune-today-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .fortune-brief {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .fortune-lucky {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+  
+  .fortune-star {
+    font-size: 14px;
+  }
+  
+  .fortune-desc {
+    font-size: 14px;
+  }
+  
+  /* 手相报告卡片 */
+  .line-card {
+    padding: 15px;
+  }
+  
+  .line-name {
+    font-size: 16px;
+  }
+  
+  .line-meaning {
+    font-size: 14px;
+  }
+  
+  /* 八字网格 */
+  .bazi-cell {
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  
+  /* 健康指数 */
+  .health-index-value {
+    font-size: 42px;
+  }
+  
+  .tongue-type-display {
+    font-size: 18px;
+  }
+  
+  /* 问卷选项 */
+  .survey-option {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  /* 邀请统计 */
+  .invite-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* 舌相详情网格 */
+  .tongue-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* 页眉 */
+  .page-header h2 {
+    font-size: 18px;
+  }
+  
+  .page-title {
+    font-size: 20px;
+  }
+}
+
+/* 中屏手机：标准手机 (376px - 414px) */
+@media (min-width: 376px) and (max-width: 414px) {
+  .main-content {
+    padding: 15px;
+  }
+  
+  .brand-name {
+    font-size: 36px;
+  }
+  
+  .feature-item {
+    padding: 25px 15px;
+  }
+  
+  .feature-grid.three-cols {
+    gap: 10px;
+  }
+  
+  .date-input-group {
+    padding: 12px;
+  }
+  
+  .fortune-today-card {
+    padding: 22px;
+  }
+}
+
+/* 大屏手机：Plus, Max (415px - 480px) */
+@media (min-width: 415px) and (max-width: 480px) {
+  .main-content {
+    padding: 18px;
+  }
+  
+  .brand-name {
+    font-size: 40px;
+  }
+  
+  .feature-item {
+    padding: 28px 18px;
+  }
+  
+  .fortune-today-card {
+    padding: 24px;
+  }
+}
+
+/* 平板 (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  body {
+    background: linear-gradient(135deg, #f5f0ff 0%, #e8e0f5 100%);
+  }
+  
+  .main-content {
+    max-width: 480px;
+    background: var(--bg);
+    min-height: 100vh;
+    box-shadow: 0 0 30px rgba(107, 91, 149, 0.08);
+  }
+  
+  .navbar {
+    border-radius: 0 0 20px 20px;
+  }
+}
+
+/* 桌面网页 (>= 769px) */
+@media (min-width: 769px) {
+  body {
+    background: linear-gradient(135deg, #f5f0ff 0%, #e8e0f5 100%);
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    max-width: 480px;
+    background: var(--bg);
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(107, 91, 149, 0.1);
+  }
+  
+  .navbar {
+    border-radius: 0 0 20px 20px;
+    max-width: 480px;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .app-footer {
+    border-radius: 20px 20px 0 0;
+    max-width: 480px;
+    margin: 40px auto 0;
+  }
 }
