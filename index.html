@@ -309,14 +309,86 @@
             <div class="wuxing-summary" id="wuxingSummary"></div>
           </div>
 
-          <!-- 今日运势 -->
-          <div class="fortune-today-section">
-            <div class="fortune-header">
-              <div class="fortune-title">今日运势</div>
-              <div class="fortune-score" id="todayScore">综合评分：--</div>
+          <!-- 小红书风格今日运势卡片 -->
+          <div class="hook-text" id="fortuneHook">
+            ✨ 哇！今天的运势里藏着这个小秘密...
+          </div>
+
+          <!-- 国潮分享卡片 -->
+          <div class="share-card">
+            <div class="share-card-header">
+              <div class="share-card-year">乙巳年</div>
+              <div class="share-card-title">今日运势签</div>
+              <div class="share-card-score">
+                <span>⭐</span>
+                <span id="shareCardScore">85分</span>
+                <span>⭐</span>
+              </div>
             </div>
-            <div class="fortune-tags" id="fortuneTags"></div>
-            <div class="fortune-detail" id="fortuneDetail"></div>
+            <div class="share-card-content">
+              <div class="share-item">
+                <div class="share-icon">🎨</div>
+                <div class="share-text">
+                  <div class="share-label">幸运色</div>
+                  <div class="share-value good" id="shareLuckyColor">紫色</div>
+                </div>
+              </div>
+              <div class="share-item">
+                <div class="share-icon">🔢</div>
+                <div class="share-text">
+                  <div class="share-label">幸运数字</div>
+                  <div class="share-value good" id="shareLuckyNumber">6、8</div>
+                </div>
+              </div>
+              <div class="share-item">
+                <div class="share-icon">📍</div>
+                <div class="share-text">
+                  <div class="share-label">吉位方向</div>
+                  <div class="share-value" id="shareLuckyDirection">东南</div>
+                </div>
+              </div>
+            </div>
+            <div class="share-card-footer">
+              <div class="share-card-cta">长按保存 · 分享给好友</div>
+              <div class="share-card-brand">🦄 Unicare AI运势分析</div>
+            </div>
+          </div>
+
+          <!-- 详细运势分析 -->
+          <div class="fortune-detail-section">
+            <div class="content-section">
+              <div class="content-section-title">💼 事业运</div>
+              <div class="content-section-body" id="careerFortune">
+                今日工作状态不错，适合处理重要事务...
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-section-title">💰 财运</div>
+              <div class="content-section-body" id="moneyFortune">
+                财运平稳，不建议大额投资...
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-section-title">❤️ 感情运</div>
+              <div class="content-section-body" id="loveFortune">
+                单身者有机会遇到心仪对象...
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-section-title">🏃 健康运</div>
+              <div class="content-section-body" id="healthFortune">
+                注意休息，避免熬夜...
+              </div>
+            </div>
+          </div>
+
+          <!-- 互动引导区 -->
+          <div class="interaction-section">
+            <div class="interaction-title">觉得准吗？分享给好友PK一下 👇</div>
+            <div class="interaction-btns">
+              <button class="interaction-btn" onclick="app.shareFortune()">📤 分享运势</button>
+              <button class="interaction-btn primary" onclick="app.goToInvite()">🎁 邀请好友</button>
+            </div>
           </div>
 
           <button class="btn-secondary" onclick="app.goToBazi()" style="margin-top:30px;">重新录入八字</button>

@@ -157,37 +157,75 @@
   color: white;
 }
 
+/* 三段式内容结构 */
+.fortune-detail-section {
+  margin: 24px 0;
+}
+
+.content-section {
+  margin-bottom: 16px;
+}
+
+.content-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.content-section-body {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
 /* 移动端文字防溢出优化 */
 @media (max-width: 375px) {
   .share-card {
     padding: 18px 14px;
     margin: 15px 0;
   }
-  
+
   .share-card-title {
     font-size: 18px;
   }
-  
+
   .share-item {
     padding: 10px 0;
   }
-  
+
   .share-icon {
     font-size: 24px;
     width: 32px;
   }
-  
+
   .share-value {
     font-size: 14px;
   }
-  
+
   .hook-text {
     font-size: 15px;
     padding: 12px;
   }
-  
+
   .interaction-btn {
     padding: 8px 16px;
     font-size: 13px;
+  }
+
+  .content-section-title {
+    font-size: 14px;
+  }
+
+  .content-section-body {
+    font-size: 14px;
+    padding: 12px;
   }
 }
