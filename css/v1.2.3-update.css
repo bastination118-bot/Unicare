@@ -1,0 +1,193 @@
+/* ============ v1.2.3 小红书爆款风格优化 ============ */
+
+/* 国潮分享卡片 */
+.share-card {
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFF5E6 100%);
+  border-radius: 20px;
+  padding: 24px 20px;
+  margin: 20px 0;
+  border: 2px solid var(--gold);
+  box-shadow: 0 4px 20px rgba(198, 47, 47, 0.1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.share-card-header {
+  margin-bottom: 20px;
+}
+
+.share-card-year {
+  font-size: 14px;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.share-card-title {
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: 800;
+  color: var(--primary);
+  margin: 8px 0;
+}
+
+.share-card-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--primary) 0%, #D85A5A 100%);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.share-card-content {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 15px 0;
+  text-align: left;
+}
+
+.share-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.share-item:last-child {
+  border-bottom: none;
+}
+
+.share-icon {
+  font-size: 28px;
+  width: 40px;
+  text-align: center;
+}
+
+.share-text {
+  flex: 1;
+}
+
+.share-label {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.share-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.share-value.good {
+  color: #52C41A;
+}
+
+.share-value.normal {
+  color: #FAAD14;
+}
+
+.share-card-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.share-card-cta {
+  font-size: 15px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* 人味化文案样式 */
+.hook-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 15px;
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFE8E8 100%);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  margin-bottom: 20px;
+}
+
+/* 互动引导区 */
+.interaction-section {
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.interaction-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1890FF;
+  margin-bottom: 12px;
+}
+
+.interaction-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.interaction-btn {
+  background: white;
+  border: 2px solid #1890FF;
+  color: #1890FF;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.interaction-btn.primary {
+  background: #1890FF;
+  color: white;
+}
+
+/* 移动端文字防溢出优化 */
+@media (max-width: 375px) {
+  .share-card {
+    padding: 18px 14px;
+    margin: 15px 0;
+  }
+  
+  .share-card-title {
+    font-size: 18px;
+  }
+  
+  .share-item {
+    padding: 10px 0;
+  }
+  
+  .share-icon {
+    font-size: 24px;
+    width: 32px;
+  }
+  
+  .share-value {
+    font-size: 14px;
+  }
+  
+  .hook-text {
+    font-size: 15px;
+    padding: 12px;
+  }
+  
+  .interaction-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}

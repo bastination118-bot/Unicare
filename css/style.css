@@ -1,8 +1,8 @@
 /* 全局样式 */
 :root {
-  --primary: #6B5B95;
-  --primary-light: #9B8BC5;
-  --secondary: #FF6B6B;
+  --primary: #C62F2F;
+  --primary-light: #D85A5A;
+  --secondary: #D4AF37;
   --bg: #F5F5F5;
   --card-bg: #FFFFFF;
   --text: #333333;
@@ -10,6 +10,8 @@
   --border: #E8E8E8;
   --success: #52C41A;
   --warning: #FAAD14;
+  --gold: #D4AF37;
+  --ink: #1a1a1a;
 }
 
 * {
